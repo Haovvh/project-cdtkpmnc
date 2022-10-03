@@ -17,20 +17,16 @@ function GongMap() {
     bearing: 0,
     pitch: 0
   });
-  console.log(GoongAPI.MAP_KEY);
-  return (
-    <React.Fragment>
-      
-    <ReactMapGL 
+
+  return (      
+    <ReactMapGL className='col-sm-4 col-md-6 col-xl-10'
       {...viewport} 
-      width="1000px" 
-      height="1000px" 
+      width="70rem" 
+      height="50rem" 
       mapStyle='https://tiles.goong.io/assets/goong_map_web.json'
       goongApiAccessToken={GoongAPI.MAP_KEY()}
       onViewportChange={setViewport}      
       >
-        
-
       <GeolocateControl
         style={geolocateControlStyle}
         positionOptions={{enableHighAccuracy: true}}
@@ -38,7 +34,6 @@ function GongMap() {
         auto
       />
     </ReactMapGL>
-    </React.Fragment>
   );
 }
 

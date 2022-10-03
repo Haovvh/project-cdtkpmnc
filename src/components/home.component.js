@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import UserService from "../services/user.service";
+import Customer from "./customer.component";
 
 import GongMap from "../Goong/GoongMap";
 
@@ -22,7 +22,10 @@ export default class Home extends Component {
           <header className="jumbotron">
             <h3>{this.state.content}</h3>
           </header>
-          </div>
+        </div>
+        <div>
+          <Customer/>
+        </div>
         <div className="col">
           <GongMap/>
         </div>

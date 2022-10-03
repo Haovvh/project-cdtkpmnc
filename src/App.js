@@ -20,9 +20,7 @@ class App extends Component {
     super(props); 
   }
 
-  render() {
-    
-
+  render() {  
     return (
       <div>
         <nav className="navbar navbar-expand navbar-dark bg-dark">
