@@ -16,9 +16,7 @@ import BoardAdmin from "./components/board-admin.component";
 
 
 class App extends Component {
-  constructor(props) {
-    super(props); 
-  }
+  
 
   render() {  
     return (

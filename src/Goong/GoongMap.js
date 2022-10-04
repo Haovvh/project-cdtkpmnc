@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {useState} from 'react';
 import ReactMapGL, {GeolocateControl} from '@goongmaps/goong-map-react';
-import GoongAPI from './GoongAPI';
+import { MAP_KEY } from './GoongKEY';
 
 
 const geolocateControlStyle= {
@@ -24,7 +24,7 @@ function GongMap() {
       width="70rem" 
       height="50rem" 
       mapStyle='https://tiles.goong.io/assets/goong_map_web.json'
-      goongApiAccessToken={GoongAPI.MAP_KEY()}
+      goongApiAccessToken={MAP_KEY}
       onViewportChange={setViewport}      
       >
       <GeolocateControl

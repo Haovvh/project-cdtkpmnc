@@ -1,23 +1,20 @@
 import React, {useState} from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
-import TotalMoney from "../utils/TotalMoney";
-import GoongAPI from "../Goong/GoongAPI";
+import TotalMoney from "./totalMoney.component";
 
-function Customer() {
+
+function Customer () {
     
-    const totalMoney = (origins, destinations) => {
-        GoongAPI.DISTANCEMATRIS_API(origins, destinations)
-    }
     return(
         <React.Fragment>
             <div className="col-md-12">
                 <div className="card card-container">
-
-                <Form onSubmit={() => TotalMoney}>
+                <TotalMoney origins="20.981971,105.864323" destinations="21.031011,105.783206" />
+                <Form >
                     <div>
                         <div className="form-group">
-                        <label htmlFor="username">Điểm đón</label>
+                        <label htmlFor="username">Điểm đón:</label>
                         <Input
                             placeholder="Điểm đón"
                             type="text"
@@ -26,7 +23,7 @@ function Customer() {
                         />
                         </div>  
                         <div className="form-group">
-                        <label htmlFor="username">Điểm đến</label>
+                        <label htmlFor="username">Điểm đến:</label>
                         <Input
                             placeholder="Điểm đến"
                             type="text"
@@ -35,7 +32,7 @@ function Customer() {
                         />
                         </div>                      
                         <div className="form-group">
-                        <button className="btn btn-primary btn-block">Xác nhận</button>
+                        <button className="btn btn-primary btn-block" >Xác nhận</button>
                         </div>
                     </div>
                 </Form>
@@ -44,5 +41,6 @@ function Customer() {
             </div>
         </React.Fragment>
     )
+    
 }
 export default Customer;

@@ -4,6 +4,10 @@ import Customer from "./customer.component";
 
 import GongMap from "../Goong/GoongMap";
 
+
+import TotalMoney from "./totalMoney.component";
+
+
 export default class Home extends Component {
   constructor(props) {
     super(props);
@@ -12,7 +16,7 @@ export default class Home extends Component {
       content: ""
     };
   }
-
+  
   
 
   render() {
@@ -28,6 +32,9 @@ export default class Home extends Component {
         </div>
         <div className="col">
           <GongMap/>
+        </div>
+        <div>
+          
         </div>
        
         
