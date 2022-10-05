@@ -10,7 +10,7 @@ export default function TotalMoney(origins, destinations){
             distance: res.data.rows[0].elements[0].distance.text,
             duration: res.data.rows[0].elements[0].duration.text
         }
-        return dataObject;
+        return "So km la: " + dataObject.distance + "Thời gian là: " + dataObject.duration;
         
     }).catch((err) => {
         console.log(err)

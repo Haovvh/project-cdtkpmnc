@@ -1,20 +1,15 @@
 import React, { Component } from "react";
+import GoongMap from "../Goong/GoongMap"
 
 
-
-export default function BoardUser() {
-
+export default function BoardDriver() {
   return (
     <React.Fragment className="container">
       <div>
-        <h1>
-          User
-        </h1>
+        <h1>Driver</h1>
       </div>
       <div >
-        <header className="jumbotron">
-          <h3>{this.state.content}</h3>
-        </header>
+        <GoongMap />
       </div>
     </React.Fragment>
 

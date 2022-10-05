@@ -3,14 +3,15 @@ import { Routes, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
-
 import Login from "./components/login.component";
 import Register from "./components/register.component";
 import Home from "./components/home.component";
 import Profile from "./components/profile.component";
 import BoardUser from "./components/board-user.component";
-import BoardModerator from "./components/board-moderator.component";
-import BoardAdmin from "./components/board-admin.component";
+import BoardCallcenter from "./components/board-callcenter.component";
+import BoardCustomer from "./components/board-customer.component";
+import BoardDriver from "./components/board-driver.component";
+
 
 // import AuthVerify from "./common/auth-verify";
 
@@ -32,20 +33,25 @@ class App extends Component {
               </Link>
             </li>
             <li className="nav-item">
-                <Link to={"/mod"} className="nav-link">
-                  Moderator Board
-                </Link>
-              </li>
-
-              <li className="nav-item">
-                <Link to={"/admin"} className="nav-link">
-                  Admin Board
-                </Link>
-              </li>
-
-              <li className="nav-item">
                 <Link to={"/user"} className="nav-link">
-                  User
+                  USer
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link to={"/customer"} className="nav-link">
+                  Customer
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link to={"/driver"} className="nav-link">
+                  Driver
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to={"/callcenter"} className="nav-link">
+                  callcenter
                 </Link>
               </li>
           </div>
@@ -72,8 +78,9 @@ class App extends Component {
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/user" element={<BoardUser />} />
-            <Route path="/mod" element={<BoardModerator />} />
-            <Route path="/admin" element={<BoardAdmin />} />
+            <Route path="/customer" element={<BoardCustomer />} />
+            <Route path="/driver" element={<BoardDriver />} />
+            <Route path="/callcenter" element={<BoardCallcenter />} />
           </Routes>
         </div>
 
