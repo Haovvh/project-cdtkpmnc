@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 
 
 
@@ -13,7 +13,7 @@ export default function BoardUser() {
       </div>
       <div >
         <header className="jumbotron">
-          <h3>{this.state.content}</h3>
+
         </header>
       </div>
     </React.Fragment>
