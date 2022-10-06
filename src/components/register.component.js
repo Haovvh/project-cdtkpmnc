@@ -12,8 +12,6 @@ export default class Register extends Component {
   render() {
     return (
       <React.Fragment>
-
-
         <div className="col-md-12">
           <div className="card card-container">
             <img

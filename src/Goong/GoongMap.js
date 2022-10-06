@@ -9,7 +9,7 @@ const geolocateControlStyle = {
   top: 10
 };
 
-function GongMap() {
+function GongMap(props) {
   const [viewport, setViewport] = useState({
     latitude: 10.739,
     longitude: 106.6657,
@@ -17,9 +17,11 @@ function GongMap() {
     bearing: 0,
     pitch: 0
   });
-
+  if (props.isOnline === "Offline") {
+    return null;
+  }
   return (
-    <ReactMapGL className='col-sm-4 col-md-6 col-xl-10'
+    <ReactMapGL className='card card-container'
       {...viewport}
       width="70rem"
       height="50rem"

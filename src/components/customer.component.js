@@ -13,7 +13,7 @@ const required = value => {
     }
 };
 
-export default function Customer(props = true) {
+export default function Customer(props) {
 
     const [distance, setDistance] = useState("")
     const [duration, setDuration] = useState("")

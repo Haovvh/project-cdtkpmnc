@@ -1,9 +1,18 @@
 import React, { useState } from "react";
 
-export default function User() {
-    const [show, setShow] = useState(true)
+export default function User(props) {
+    const [show, setShow] = useState("showTotal")
     if (!show) {
         return null;
+    }
+    const handleClick = () => {
+        if (show === "showTotal") {
+            setShow("Hide");
+        } else if (show === "Hide") {
+            setShow("showTotal")
+        } else if (show === "showTotal") {
+            setShow("bookTrip")
+        }
     }
     return (
         <React.Fragment>
@@ -18,8 +27,8 @@ export default function User() {
                         />
                     </div>
                     <div className="form-group">
-                        <button className="btn btn-primary btn-block" onClick={() => { setShow(!show) }}>
-                            {show ? 'Hide' : 'Show'}</button>
+                        <button className="btn btn-primary btn-block" onClick={() => { handleClick() }}>
+                            {(show === "Hide") ? 'Hide' : ((show === "showTotal") ? "ShowTotal" : "Book")}</button>
                     </div>
                 </div>
             </div>

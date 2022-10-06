@@ -23,7 +23,6 @@ export default function BoardCallcenter() {
         </div>
       </div>
       <Customer warn={show} />
-
     </React.Fragment>
 
   );
