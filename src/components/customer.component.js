@@ -28,23 +28,26 @@ export default function Customer(props) {
     }
     const handleOnClick = async () => {
         try {
-            const origins = await axios.get(`https://rsapi.goong.io/geocode?address=${placeFrom}&api_key=${API_KEY}`)
+            if(placeFrom.trim() !== "" && placeTo.trim() !== "") {
+                const origins = await axios.get(`https://rsapi.goong.io/geocode?address=${placeFrom}&api_key=${API_KEY}`)
 
-            const jsonorigins = await origins.data.results[0].geometry.location.lat + ',' + origins.data.results[0].geometry.location.lng
+                const jsonorigins = await origins.data.results[0].geometry.location.lat + ',' + origins.data.results[0].geometry.location.lng
 
-            const destinations = await axios.get(`https://rsapi.goong.io/geocode?address=${placeTo}&api_key=${API_KEY}`)
-            const jsondestinations = await destinations.data.results[0].geometry.location.lat + ',' + destinations.data.results[0].geometry.location.lng
+                const destinations = await axios.get(`https://rsapi.goong.io/geocode?address=${placeTo}&api_key=${API_KEY}`)
+                const jsondestinations = await destinations.data.results[0].geometry.location.lat + ',' + destinations.data.results[0].geometry.location.lng
 
-            if (jsonorigins && jsondestinations) {
-                const distance = await axios.get(`https://rsapi.goong.io/DistanceMatrix?origins=${jsonorigins}&destinations=${jsondestinations}&vehicle=car&api_key=${API_KEY}`)
-                const json = await distance.data.rows[0].elements[0]
-                setDistance("Quảng đường là: " + json.distance.text)
-                setDuration("Thời gian là: " + json.duration.text)
-                setShow(!show)
+                if (jsonorigins && jsondestinations) {
+                    const distance = await axios.get(`https://rsapi.goong.io/DistanceMatrix?origins=${jsonorigins}&destinations=${jsondestinations}&vehicle=car&api_key=${API_KEY}`)
+                    const json = await distance.data.rows[0].elements[0]
+                    setDistance("Quảng đường là: " + json.distance.text)
+                    setDuration("Thời gian là: " + json.duration.text)
+                    setShow(!show)
+                }
+                else {
+                    return;
+                }
             }
-            else {
-                return;
-            }
+            
         } catch (error) {
             console.log(error)
         }
