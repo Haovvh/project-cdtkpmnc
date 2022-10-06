@@ -1,30 +1,28 @@
-import React from "react";
-import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
+import React, { useState } from "react";
+import Customer from "./customer.component";
 
 export default function BoardCallcenter() {
+  const [show, setShow] = useState(true)
+
   return (
-    <React.Fragment className="container col-md-12">
+    <React.Fragment>
       <div className="card card-container">
-        <h1>
-          BoardCallcenter
-        </h1>
-        <Form >
-          <div className="col-md-12">
-            <div className="form-group">
-              <label htmlFor="phonecustomer">Phone Customer: </label>
-              <Input
-                placeholder="Phone Customer"
-                type="phone"
-                className="form-control"
-                name="phonecustomer"
-              />
-            </div>
-
+        <div className="col-md-12">
+          <div className="form-group">
+            <label htmlFor="phonecustomer">Phone Customer: </label>
+            <input
+              placeholder="Phone Customer"
+              type="phone"
+              className="form-control"
+            />
           </div>
-
-        </Form>
+          <div className="form-group">
+            <button className="btn btn-primary btn-block" onClick={() => { setShow(!show) }}>
+              {show ? 'Hide' : 'Show'}</button>
+          </div>
+        </div>
       </div>
+      <Customer warn={show} />
 
     </React.Fragment>
 

@@ -17,9 +17,9 @@ import BoardDriver from "./components/board-driver.component";
 
 
 class App extends Component {
-  
 
-  render() {  
+
+  render() {
     return (
       <div>
         <nav className="navbar navbar-expand navbar-dark bg-dark">
@@ -33,41 +33,41 @@ class App extends Component {
               </Link>
             </li>
             <li className="nav-item">
-                <Link to={"/user"} className="nav-link">
-                  USer
-                </Link>
-              </li>
+              <Link to={"/user"} className="nav-link">
+                USer
+              </Link>
+            </li>
 
-              <li className="nav-item">
-                <Link to={"/customer"} className="nav-link">
-                  Customer
-                </Link>
-              </li>
+            <li className="nav-item">
+              <Link to={"/customer"} className="nav-link">
+                Customer
+              </Link>
+            </li>
 
-              <li className="nav-item">
-                <Link to={"/driver"} className="nav-link">
-                  Driver
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link to={"/callcenter"} className="nav-link">
-                  callcenter
-                </Link>
-              </li>
+            <li className="nav-item">
+              <Link to={"/driver"} className="nav-link">
+                Driver
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to={"/callcenter"} className="nav-link">
+                Callcenter
+              </Link>
+            </li>
           </div>
 
           <div className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Link to={"/profile"} className="nav-link">
-                 
-                </Link>
-              </li>
-              <li className="nav-item">
-                <a href="/login" className="nav-link" >
-                  LogOut
-                </a>
-              </li>
-            </div>
+            <li className="nav-item">
+              <Link to={"/profile"} className="nav-link">
+
+              </Link>
+            </li>
+            <li className="nav-item">
+              <a href="/login" className="nav-link" >
+                LogOut
+              </a>
+            </li>
+          </div>
         </nav>
 
         <div className="container mt-3">

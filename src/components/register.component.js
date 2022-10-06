@@ -6,29 +6,29 @@ import CheckButton from "react-validation/build/button";
 
 
 export default class Register extends Component {
-  
 
-  
+
+
   render() {
     return (
       <React.Fragment>
 
-      
-      <div className="col-md-12">
-        <div className="card card-container">
-          <img
-            src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-            alt="profile-img"
-            className="profile-img-card"
-          />
 
-          <Form
-            onSubmit={this.handleRegister}
-            ref={c => {
-              this.form = c;
-            }}
-          >
-            <div>
+        <div className="col-md-12">
+          <div className="card card-container">
+            <img
+              src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
+              alt="profile-img"
+              className="profile-img-card"
+            />
+
+            <Form
+              onSubmit={this.handleRegister}
+              ref={c => {
+                this.form = c;
+              }}
+            >
+              <div>
                 <div className="form-group">
                   <label htmlFor="username">Username</label>
                   <Input
@@ -36,7 +36,7 @@ export default class Register extends Component {
                     type="text"
                     className="form-control"
                     name="username"
-                    
+
                   />
                 </div>
 
@@ -47,7 +47,7 @@ export default class Register extends Component {
                     type="text"
                     className="form-control"
                     name="email"
-                    
+
                   />
                 </div>
 
@@ -58,10 +58,10 @@ export default class Register extends Component {
                     type="password"
                     className="form-control"
                     name="password"
-                    
+
                   />
                 </div>
-                
+
 
                 <div className="form-group">
                   <button className="btn btn-primary btn-block">Sign Up</button>
@@ -79,18 +79,18 @@ export default class Register extends Component {
                   {this.state.message}
                 </div>
               </div>
-            <CheckButton
-              style={{ display: "none" }}
-              ref={c => {
-                this.checkBtn = c;
-              }}
-            />
-          </Form>
+              <CheckButton
+                style={{ display: "none" }}
+                ref={c => {
+                  this.checkBtn = c;
+                }}
+              />
+            </Form>
+          </div>
         </div>
-      </div>
-      <div>
-        
-      </div>
+        <div>
+
+        </div>
       </React.Fragment>
     );
   }
