@@ -77,7 +77,7 @@ export default function Customer(props) {
                     <div className="form-group">
                         <label htmlFor="username">Điểm đón:</label>
                         <input
-                            id="browsers" name="browser"
+                            list="browsers" name="browser"
                             placeholder="Điểm đón"
                             type="text"
                             className="form-control"
