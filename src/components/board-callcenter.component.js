@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Customer from "./customer.component";
+import CustomerInfo from "./customer-info.component";
+
 
 export default function BoardCallcenter() {
   const [show, setShow] = useState(true)
@@ -22,6 +24,7 @@ export default function BoardCallcenter() {
           </div>
         </div>
       </div>
+      <CustomerInfo warn={show} />
       <Customer warn={show} />
     </React.Fragment>
 

@@ -15,6 +15,13 @@ const required = value => {
 
 export default function Customer(props) {
 
+    const [place, setPlace] = useState([
+        { place: "122 Trường chinh thân phú", count: 7 },
+        { place: "123 Trường chinh thân phú", count: 6 },
+        { place: "124 Trường chinh thân phú", count: 5 },
+        { place: "125 Trường chinh thân phú", count: 4 },
+        { place: "126 Trường chinh thân phú", count: 3 }
+    ])
     const [distance, setDistance] = useState("")
     const [duration, setDuration] = useState("")
     const [placeFrom, setPlaceFrom] = useState("");
@@ -28,7 +35,7 @@ export default function Customer(props) {
     }
     const handleOnClick = async () => {
         try {
-            if(placeFrom.trim() !== "" && placeTo.trim() !== "") {
+            if (placeFrom.trim() !== "" && placeTo.trim() !== "") {
                 const origins = await axios.get(`https://rsapi.goong.io/geocode?address=${placeFrom}&api_key=${API_KEY}`)
 
                 const jsonorigins = await origins.data.results[0].geometry.location.lat + ',' + origins.data.results[0].geometry.location.lng
@@ -47,7 +54,7 @@ export default function Customer(props) {
                     return;
                 }
             }
-            
+
         } catch (error) {
             console.log(error)
         }
@@ -70,6 +77,7 @@ export default function Customer(props) {
                     <div className="form-group">
                         <label htmlFor="username">Điểm đón:</label>
                         <input
+                            id="browsers" name="browser"
                             placeholder="Điểm đón"
                             type="text"
                             className="form-control"
@@ -77,6 +85,13 @@ export default function Customer(props) {
                             onChange={(event) => { handlePlaceFrom(event) }}
                             validations={[required]}
                         />
+                        <datalist id="browsers">
+                            <option value="123" />
+                            <option value="Firefox" />
+                            <option value="Chrome" />
+                            <option value="Opera" />
+                            <option value="Safari" />
+                        </datalist>
                     </div>
                     <div className="form-group">
                         <label htmlFor="username">Điểm đến:</label>
@@ -93,6 +108,7 @@ export default function Customer(props) {
                         <select id="cars" name="cars">
                             <option value="car4">Car 4 Chỗ</option>
                             <option value="car7">Car 7 Chỗ</option>
+                            <option value="car7">Bất kỳ</option>
                         </select>
                     </div>
                     <div className="form-group">
