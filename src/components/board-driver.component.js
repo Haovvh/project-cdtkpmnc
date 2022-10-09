@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import GoongMap from "../Goong/GoongMap"
+
 import DriverAcceptCustomer from "./driver-accept-customer.component";
+import GoongMap from "../Goong/GoongMap"
+import Goong from "../Goong/Goong";
 
 export default function BoardDriver() {
   const [isTrips, setIsTrips] = useState(true);
-  const [isOnline, setIsOnline] = useState("Online")
+  const [isOnline, setIsOnline] = useState("Offline")
   const [customerInfo, setCustomerInfo] = useState({
 
     name: "Trần Văn A",
@@ -33,10 +35,10 @@ export default function BoardDriver() {
           }}>{(isOnline === "Online") ? 'Offline' : 'Online'}</button>
         </div>
         <div>
-          <DriverAcceptCustomer info={customerInfo} isTrips={true} />
+          <DriverAcceptCustomer info={customerInfo} isTrips={isOnline} />
         </div>
         <div >
-          <GoongMap isOnline={isOnline} />
+          <GoongMap/>
         </div>
       </div>
     </React.Fragment>

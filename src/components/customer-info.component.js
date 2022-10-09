@@ -18,8 +18,6 @@ export default function CustomerInfo(props) {
         { place: "126 Trường chinh thân phú", count: 3 }
     ])
 
-
-    ////{callHistory.map(() => { <CallHistory info={callHistory} /> })}
     if (!props.warn) {
         return null;
     }

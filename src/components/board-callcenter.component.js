@@ -5,6 +5,7 @@ import CustomerInfo from "./customer-info.component";
 
 export default function BoardCallcenter() {
   const [show, setShow] = useState(true)
+  const [status, setStatus] = useState("getCustomer")
 
   return (
     <React.Fragment>
@@ -20,7 +21,7 @@ export default function BoardCallcenter() {
           </div>
           <div className="form-group">
             <button className="btn btn-primary btn-block" onClick={() => { setShow(!show) }}>
-              {show ? 'Hide' : 'Show'}</button>
+              {status === "getCustomer" ? 'Show Customer' : ((status === "bookdriver") ? "Book Driver" : "Complete")}</button>
           </div>
         </div>
       </div>

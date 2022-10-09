@@ -12,10 +12,13 @@ const required = value => {
         );
     }
 };
+function Place(props) {
+    return <option value={props.place}/>
+}
 
 export default function Customer(props) {
-
-    const [place, setPlace] = useState([
+    const [status, setStatus] = useState("Show")
+    const [places, setPlaces] = useState([
         { place: "122 Trường chinh thân phú", count: 7 },
         { place: "123 Trường chinh thân phú", count: 6 },
         { place: "124 Trường chinh thân phú", count: 5 },
@@ -48,6 +51,7 @@ export default function Customer(props) {
                     const json = await distance.data.rows[0].elements[0]
                     setDistance("Quảng đường là: " + json.distance.text)
                     setDuration("Thời gian là: " + json.duration.text)
+                    setStatus("bookdriver")
                     setShow(!show)
                 }
                 else {
@@ -77,7 +81,7 @@ export default function Customer(props) {
                     <div className="form-group">
                         <label htmlFor="username">Điểm đón:</label>
                         <input
-                            list="browsers" name="browser"
+                            list="placeFrom" name="browser"
                             placeholder="Điểm đón"
                             type="text"
                             className="form-control"
@@ -85,17 +89,14 @@ export default function Customer(props) {
                             onChange={(event) => { handlePlaceFrom(event) }}
                             validations={[required]}
                         />
-                        <datalist id="browsers">
-                            <option value="123" />
-                            <option value="Firefox" />
-                            <option value="Chrome" />
-                            <option value="Opera" />
-                            <option value="Safari" />
+                        <datalist id="placeFrom">
+                            {places.map((val) => <Place place={val.place}/>)} 
                         </datalist>
                     </div>
                     <div className="form-group">
                         <label htmlFor="username">Điểm đến:</label>
                         <input
+                            list="placeTo"
                             placeholder="Điểm đến"
                             type="text"
                             className="form-control"
@@ -103,6 +104,9 @@ export default function Customer(props) {
                             onChange={(event) => { handlePlaceTo(event) }}
                             validations={[required]}
                         />
+                        <datalist id="placeTo">
+                            {places.map((val) => <Place place={val.place}/>)}
+                        </datalist>
                     </div>
                     <div className="form-group">
                         <select id="cars" name="cars">
@@ -111,11 +115,11 @@ export default function Customer(props) {
                             <option value="car7">Bất kỳ</option>
                         </select>
                     </div>
-                    <div className="form-group">
+                    <div className="form-group ">
                         <button className="btn btn-primary btn-block" onClick={() => {
                             handleOnClick()
                         }}>
-                            Show info</button>
+                            {(status === "Show") ? "Show Trip Info" : ((status === "bookdriver") ? " Book Driver" : "Complete Trip") }</button>
                     </div>
                 </div>
             </div>

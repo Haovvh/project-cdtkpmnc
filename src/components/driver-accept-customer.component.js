@@ -2,8 +2,8 @@ import React, { useState } from "react";
 
 function DriverAcceptCustomer(props) {
     const [theRideComplete, setTheRideComplete] = useState(true)
-
-    if (!theRideComplete) {
+    
+    if (props.isTrips === "Offline") {
         return null;
     }
     return (
@@ -49,11 +49,10 @@ function DriverAcceptCustomer(props) {
                     </div>
                     <button className="btn btn-primary btn-block"
                         onClick={() => { setTheRideComplete(!theRideComplete) }}>
-                        The Ride Complete
+                        Accept Trips
                     </button>
                 </div>
             </div>
-
         </React.Fragment>
     )
 }

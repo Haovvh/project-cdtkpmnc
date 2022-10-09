@@ -13,11 +13,11 @@ function GongMap(props) {
   const [viewport, setViewport] = useState({
     latitude: 10.739,
     longitude: 106.6657,
-    zoom: 14,
-    bearing: 0,
-    pitch: 0
+    zoom: 12
   });
-  if (props.isOnline === "Offline") {
+  
+
+  if (props.Online === "Offline") {
     return null;
   }
   return (
@@ -33,6 +33,7 @@ function GongMap(props) {
         style={geolocateControlStyle}
         positionOptions={{ enableHighAccuracy: true }}
         trackUserLocation={true}
+        
         auto
       />
     </ReactMapGL>
