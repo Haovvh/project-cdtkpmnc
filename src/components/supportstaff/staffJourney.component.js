@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import GoongAPI from "../../Goong/GoongAPI";
 import socketIOClient from "socket.io-client";
 import DriverJourney from "../customers/driverInfo.component";
-import passengerService from "../../services/users.service";
+import passengerService from "../../services/user.service";
 import { MONEY_1KM_DISTANCE } from "../../public/const";
 
 

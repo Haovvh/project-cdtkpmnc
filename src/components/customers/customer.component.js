@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import customerService from "../../services/users.service";
+import userService from "../../services/user.service";
 import BookDriver from "./bookdriver.component";
 import authService from "../../services/auth.service";
 
@@ -17,9 +17,9 @@ export default function Customer () {
   
 
   const [message, setMessage] = useState("");
-  useEffect( () =>{     
-    
-    customerService.getCustomer(id).then(
+  useEffect( () =>{
+
+    userService.getUser(id).then(
       response => {
         if(response.data) {
           console.log(response.data)

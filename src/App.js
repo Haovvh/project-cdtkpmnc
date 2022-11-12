@@ -101,8 +101,7 @@ class App extends Component {
                 Register Driver
               </Link>
             </li>
-            )}
-            
+            )}            
 
             { currentUser && isCustomer && (
               <li className="nav-item">

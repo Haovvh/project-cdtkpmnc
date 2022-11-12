@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import userByPhoneService from "../../services/user-by-phone.service";
 import StaffJourney from "./staffJourney.component";
 import UserInfo from "./user-info.component";
-import passengerService from "../../services/users.service";
+import passengerService from "../../services/user.service";
 
 
 const required = value => {

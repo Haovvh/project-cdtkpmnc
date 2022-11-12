@@ -10,8 +10,7 @@ class User {
     { headers: authHeader() });
   }
   putUserCustomer(id, firstName, lastName, phone, email,  ) {
-    return axios.put(process.env.REACT_APP_API_URL + `/user/${id}`,
-    {
+    return axios.put(process.env.REACT_APP_API_URL + `/user/${id}`,{
       firstName, lastName, phone, email
     }, {
       headers: authHeader()
@@ -25,8 +24,11 @@ class User {
     }, {
       headers: authHeader()
     }
-    )
-  }  
+  )
+  } 
+ 
+  
+  
   
 }
 

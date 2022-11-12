@@ -27,8 +27,7 @@ class AuthService {
     return axios.post(process.env.REACT_APP_API_URL + "/user/register", {
       username, firstName, lastName, phone, email, password
     });
-  }
-  
+  }  
 
   getCurrentUser() {
     return JSON.parse(localStorage.getItem('user'));;

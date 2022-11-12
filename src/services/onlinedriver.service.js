@@ -8,8 +8,7 @@ class OnlineDriver {
     return axios.put(process.env.REACT_APP_API_URL + "/onlineDriver/put-onlineDriver", 
     {Status},
     { headers: authHeader() });
-  } 
-  
+  }   
 }
 
 export default new OnlineDriver();

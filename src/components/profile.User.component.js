@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import authService from "../services/auth.service";
-import usersService from "../services/users.service";
+import usersService from "../services/user.service";
 
 
 const required = value => {

@@ -2,7 +2,7 @@ import React, { useState, useEffect} from "react";
 import GongMapDriver from "../../Goong/GoongMap.Driver";
 import authService from "../../services/auth.service";
 import socketIOClient from "socket.io-client";
-import customerService from "../../services/users.service";
+import userService from "../../services/user.service";
 import driverService from "../../services/driver.service";
 import journeyService from "../../services/journey.service";
 import onlinedriverService from "../../services/onlinedriver.service";
@@ -33,7 +33,7 @@ export default function Driver (){
 
   useEffect(  () => {  
     
-    customerService.getCustomer(driverId).then(
+    userService.getUser(driverId).then(
       response => {
         if(response.data) {
           console.log(response.data)

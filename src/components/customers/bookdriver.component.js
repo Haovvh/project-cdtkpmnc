@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import GoongAPI from "../../Goong/GoongAPI";
 import GoongMap from "../../Goong/GoongMap";
 import socketIOClient from "socket.io-client";
+import authService from "../../services/auth.service";
 import authHeader from "../../services/auth-header";
 import journeyService from "../../services/journey.service";
 import DriverInfo from "./driverInfo.component";
@@ -19,6 +20,7 @@ const required = value => {
   };
 
 export default function BookDriver (props) {    
+    const id = authService.getCurrentUser().id;
 
     // const param = { query: 'token=' }
     // const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
@@ -111,54 +113,51 @@ export default function BookDriver (props) {
     useEffect( () => {
         
         //Lấy địa điểm đi thường xuyên
-        console.log("check api get all Journey")
-        journeyService.getAllJourneybyPassenger().then(
-            response => {
-                console.log(response.data)
-                if(response.data) {
-                    //setPlaces(response.data)
+        // journeyService.getAllJourneybyPassenger().then(
+        //     response => {
+        //         console.log(response.data)
+        //         if(response.data) {
+        //             //setPlaces(response.data)
                     
-                } else {
+        //         } else {
 
-                }
-            }, error => {
-                const resMessage =
-                  (error.response &&
-                    error.response.data &&
-                    error.response.data.message) ||
-                  error.message ||
-                  error.toString();
-                  setMessage(resMessage)            
-                }
-        )
+        //         }
+        //     }, error => {
+        //         console.log(error)
+        //         const resMessage =
+        //           (error.response &&
+        //             error.response.data &&
+        //             error.response.data.message) ||
+        //           error.message ||
+        //           error.toString();
+
+        //         }
+        // )
         
         //check xem có chuyến đi nào chưa hoàn thành không?
 
-        journeyService.getJourneybyPassenger().then(
+        journeyService.getJourneybyCustomer(id).then(
           response => {
             console.log(response.data)
             if(response.data) {
-                setMessage(response.data.message)
-              console.log("Có Data")
-              const user = response.data.data;
-              console.log(user)
+                
               setDriverInfo({
-                Fullname: user.Fullname,
-                Phone: user.Phone,
+                Fullname: response.data.Fullname,
+                Phone: response.data.Phone,
                 vehicleInfo: {
-                    controlNumber: user.controlNumber,
-                    type: user.type
+                    controlNumber: response.data.controlNumber,
+                    type: response.data.type
                 }
               })
               setJourney(prevState => ({
                 ...prevState,
                 origin: {
-                    fullAddressInString: user.fullAddressInString
+                    fullAddressInString: response.data.fullAddressInString
                 },
                 destination: {
-                    fullAddressInString: user.fullAddressInString
+                    fullAddressInString: response.data.fullAddressInString
                 },
-                pointCode: user.pointCode
+                pointCode: response.data.pointCode
               }))
               
               setStatus("completeTrip")
@@ -309,7 +308,7 @@ export default function BookDriver (props) {
     }
 
     const handleChange = (event) => {
-        settype( event.target.value)
+        settype(event.target.value)
     }
     //onChangePaymethod
     const onChangePaymethod = (event) => {
