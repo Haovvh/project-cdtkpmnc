@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import GoongAPI from "../../Goong/GoongAPI";
-import socketIOClient from "socket.io-client";
 import DriverJourney from "../customers/driverInfo.component";
 import passengerService from "../../services/user.service";
 import { MONEY_1KM_DISTANCE } from "../../public/const";
 
+import io from "socket.io-client";
+
+const socket = io.connect(process.env.REACT_APP_WEBSOCKETHOST)
+const room = `01234567${authService.getCurrentUser().id}`;
 
 const required = value => {
     if (!value) {
@@ -61,6 +64,10 @@ export default function StaffJourney (props) {
         }
     });
     useEffect( ()=> {
+        socket.emit("join_room", {
+            room: room
+        });
+
         passengerService.getPassenger().then(
             response => {
                 if(response.data.resp) {

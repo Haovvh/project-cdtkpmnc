@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import GoongAPI from "../../Goong/GoongAPI";
 import GoongMap from "../../Goong/GoongMap";
-import socketIOClient from "socket.io-client";
 import authService from "../../services/auth.service";
 import authHeader from "../../services/auth-header";
 import journeyService from "../../services/journey.service";
 import DriverInfo from "./driverInfo.component";
 import { MONEY_1KM_DISTANCE } from "../../public/const";
+import io from "socket.io-client";
 
-
+const socket = io.connect(process.env.REACT_APP_WEBSOCKETHOST)
+const room = `01234567${authService.getCurrentUser().id}`;
 const required = value => {
     if (!value) {
       return (
@@ -22,8 +23,6 @@ const required = value => {
 export default function BookDriver (props) {    
     const id = authService.getCurrentUser().id;
 
-    // const param = { query: 'token=' }
-    // const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
 
     const [message, setMessage] = useState("");
     const [type, settype] = useState('CAR4');
@@ -63,54 +62,57 @@ export default function BookDriver (props) {
 
     //socket
 
-    // socket.on("driverinfo", (data) => {
-    //     console.log(data)
-    //     setDriverInfo({
-    //         Fullname: data.Fullname,
-    //         Phone: data.Phone,
-    //         vehicleInfo: {
-    //             controlNumber: data.controlNumber,
-    //             type: data.type
-    //         }
-    //     })
-    //     setDisabledbutton(true)
-    // })
+    socket.on("driverinfo", (data) => {
+        console.log(data)
+        setDriverInfo({
+            Fullname: data.Fullname,
+            Phone: data.Phone,
+            vehicleInfo: {
+                controlNumber: data.controlNumber,
+                type: data.type
+            }
+        })
+        setDisabledbutton(true)
+    })
     
-    // socket.on("successpassenger",  (data) => {
+    socket.on("successpassenger",  (data) => {
         
-    //     setStatus("showtripinfo")
-    //     setJourney({
-    //         origin: {
-    //             placeId: "",
-    //             lat: 0,
-    //             lng: 0,
-    //             fullAddressInString: ""
-    //         },
-    //         destination : {
-    //             placeId: "",
-    //             lat: 0,
-    //             lng: 0,
-    //             fullAddressInString: ""
-    //         },
-    //         price: 0,
-    //         paymentMethod: "CASH",
-    //         pointCode: ""
-    //     })  
-    //     setDisabledbutton(false)
-    //     setDistance_km();
-    //     setDistance("")
-    //     setDisabled(false);
-    //     setDriverInfo({
-    //         Fullname: data.Fullname,
-    //         Phone: data.Phone,
-    //         vehicleInfo: {
-    //             controlNumber: data.controlNumber,
-    //             type: data.type
-    //         }
-    //     });    
-    //   })
+        setStatus("showtripinfo")
+        setJourney({
+            origin: {
+                placeId: "",
+                lat: 0,
+                lng: 0,
+                fullAddressInString: ""
+            },
+            destination : {
+                placeId: "",
+                lat: 0,
+                lng: 0,
+                fullAddressInString: ""
+            },
+            price: 0,
+            paymentMethod: "CASH",
+            pointCode: ""
+        })  
+        setDisabledbutton(false)
+        setDistance_km();
+        setDistance("")
+        setDisabled(false);
+        setDriverInfo({
+            Fullname: data.Fullname,
+            Phone: data.Phone,
+            vehicleInfo: {
+                controlNumber: data.controlNumber,
+                type: data.type
+            }
+        });    
+      })
 
     useEffect( () => {
+        socket.emit("join_room", {
+            room: room
+        });
         
         //Lấy địa điểm đi thường xuyên
         // journeyService.getAllJourneybyPassenger().then(
@@ -261,20 +263,20 @@ export default function BookDriver (props) {
             //check connect xem được không? 
 
             //socket gọi đến server tìm tài xế
-            // socket.emit("calldriver", {               
+            socket.emit("calldriver", {               
                 
-            //     socket_ID: socket.id,
-            //     //data gửi kèm đến server
-            //     CustomerId: authHeader().id,
-            //     origin: journey.origin,
-            //     destination: journey.destination,
-            //     pointCode: journey.pointCode,
-            //     price: journey.price,
-            //     Fullname: props.InfoCustomer.firstName + ' ' + props.InfoCustomer.lastName,
-            //     Phone: props.InfoCustomer.Phone,
-            //     type: type
+                room: room,
+                //data gửi kèm đến server
+                CustomerId: authHeader().id,
+                origin: journey.origin,
+                destination: journey.destination,
+                pointCode: journey.pointCode,
+                price: journey.price,
+                Fullname: props.InfoCustomer.firstName + ' ' + props.InfoCustomer.lastName,
+                Phone: props.InfoCustomer.Phone,
+                type: type
 
-            // });
+            });
             
             setStatus("completeTrip") 
                    

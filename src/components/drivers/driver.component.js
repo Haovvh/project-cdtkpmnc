@@ -1,18 +1,18 @@
 import React, { useState, useEffect} from "react";
 import GongMapDriver from "../../Goong/GoongMap.Driver";
 import authService from "../../services/auth.service";
-import socketIOClient from "socket.io-client";
 import userService from "../../services/user.service";
 import driverService from "../../services/driver.service";
 import journeyService from "../../services/journey.service";
 import onlinedriverService from "../../services/onlinedriver.service";
 import CustomerInfo from "./customerInfo.component";
 
+import io from "socket.io-client";
+
+const socket = io.connect(process.env.REACT_APP_WEBSOCKETHOST)
 
 export default function Driver (){  
   const driverId = authService.getCurrentUser().id;
-  // const param = { query: 'token=' }
-  // const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
 
   const [message, setMessage] = useState("");
   const [driverInfo, setDriverInfo] = useState({
@@ -29,7 +29,7 @@ export default function Driver (){
   const [Online, setOnline] = useState("");
   const [status, setStatus] = useState("Offline")
   const [InfoCustomer, setInfoCustomer] = useState({})
-  const [socket_ID, setSocket_ID] = useState("");
+  const [room, setRoom] = useState("");
 
   useEffect(  () => {  
     
@@ -107,35 +107,35 @@ export default function Driver (){
   }, []);
 
   //Socket
-  // socket.on("broadcat",  (data) => {
-  //   console.log("driver");
-  //   console.log(data.drivers)
-  //   let driver = data.drivers;
+  socket.on("broadcat",  (data) => {
+    console.log("driver");
+    console.log(data.drivers)
+    let driver = data.drivers;
 
-  //   for(let i =0 ; i< driver.length; i++) {
-  //     console.log(driverInfo.Driver_ID)
+    for(let i =0 ; i< driver.length; i++) {
+      console.log(driverInfo.Driver_ID)
 
-  //     if(driverId === driver[i].Driver_ID){
-  //       setSocket_ID(data.socket_ID)
-  //       setStatus("isPassenger");
-  //       setPassengerInfo(prevState =>  ({
-  //         ...prevState,
-  //         Passenger_ID: data.user.Passenger_ID,
-  //         User_ID: data.user.User_ID,
-  //         SupportStaff_ID: data.user.SupportStaff_ID,
-  //         Fullname: data.user.Fullname,
-  //         Phone: data.user.Phone,
-  //         origin_Id: data.user.origin.placeId,
-  //         origin_Fulladdress: data.user.origin.fulladdress,
-  //         destination_Id: data.user.destination.placeId,
-  //         destination_Fulladdress: data.user.destination.fulladdress, 
-  //         distance_km: data.user.distance_km,
-  //         Price: data.user.Price,
-  //         pointCode: data.user.pointCode
-  //       }))
-  //     }
-  //   }
-  // }) 
+      if(driverId === driver[i].Driver_ID){
+        setRoom(data.room)
+        setStatus("isPassenger");
+        setPassengerInfo(prevState =>  ({
+          ...prevState,
+          Passenger_ID: data.user.Passenger_ID,
+          User_ID: data.user.User_ID,
+          SupportStaff_ID: data.user.SupportStaff_ID,
+          Fullname: data.user.Fullname,
+          Phone: data.user.Phone,
+          origin_Id: data.user.origin.placeId,
+          origin_Fulladdress: data.user.origin.fulladdress,
+          destination_Id: data.user.destination.placeId,
+          destination_Fulladdress: data.user.destination.fulladdress, 
+          distance_km: data.user.distance_km,
+          Price: data.user.Price,
+          pointCode: data.user.pointCode
+        }))
+      }
+    }
+  }) 
 
   
   const handleOnline = () => {   
@@ -191,17 +191,17 @@ export default function Driver (){
                   console.log(error)
                 }
               )
-              // socket.emit("driveracceptjourney", {
-              //   socket_ID: socket_ID,
-              //   Driver_ID: driverInfo.id,
-              //   Phone: driverInfo.Phone,
-              //   Fullname: driverInfo.Fullname,
+              socket.emit("driveracceptjourney", {
+                room: room,
+                Driver_ID: driverInfo.id,
+                Phone: driverInfo.Phone,
+                Fullname: driverInfo.Fullname,
 
-              //   Car_type: driverInfo.Car_type,
-              //   Car_code: driverInfo.Car_code,
-              //   Car_seat: driverInfo.Car_seat,
-              //   Car_color: driverInfo.Car_color
-              // })                  
+                Car_type: driverInfo.Car_type,
+                Car_code: driverInfo.Car_code,
+                Car_seat: driverInfo.Car_seat,
+                Car_color: driverInfo.Car_color
+              })                  
               setStatus("Donetrip")
             } else {
               setMessage(response.data.message)
@@ -226,10 +226,10 @@ export default function Driver (){
         response => {
           if(response.data.resp) {
             setMessage(response.data.message)
-            // socket.emit("successjourney", {
-            //   socket_ID: socket_ID,
-            //   Status: "success"
-            // })
+            socket.emit("successjourney", {
+              room: room,
+              Status: "success"
+            })
             onlinedriverService.putOnlineDriver("Online").then(
               response => {
                 console.log(response.data);
