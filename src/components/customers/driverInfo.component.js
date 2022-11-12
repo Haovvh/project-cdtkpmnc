@@ -1,59 +1,52 @@
-import React, { useState } from "react";
+import React from "react";
 
-function DriverAcceptCustomer(props) {
-    const [theRideComplete, setTheRideComplete] = useState(true)
+export default function DriverInfo(props) {
     
-    if (props.isTrips === "Offline") {
+    if (!(props.info.Phone  && props.info.controlNumber && props.info.type )) {
         return null;
-    }
+    }   
     return (
         <React.Fragment>
-            <div className="card card-container">
+            <div  className=" card-container">
                 <div className=" col-md-12">
                     <div className="form-group">
-                        <label htmlFor="username">Họ tên khách:</label>
+                        <label htmlFor="Driver">Driver:</label>
                         <input
                             type="text"
                             className="form-control"
-                            value={props.info.name}
+                            value={props.info.Fullname}
                             disabled
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="username">SDT:</label>
+                        <label htmlFor="Phone">Phone:</label>
                         <input
-                            type="text"
+                            type="phone"
                             className="form-control"
-                            value={props.info.sdt}
+                            value={props.info.Phone}
                             disabled
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="username">Điểm đón:</label>
+                        <label htmlFor="Control Number">Control Number:</label>
                         <input
                             type="text"
                             className="form-control"
-                            value={props.info.placeFrom}
+                            value={props.info.controlNumber}
                             disabled
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="">Điểm đến:</label>
+                        <label htmlFor="">Car Type:</label>
                         <input
-                            placeholder="Điểm đến"
                             type="text"
                             className="form-control"
-                            value={props.info.placeTo}
+                            value={props.info.type}
                             disabled
                         />
-                    </div>
-                    <button className="btn btn-primary btn-block"
-                        onClick={() => { setTheRideComplete(!theRideComplete) }}>
-                        Accept Trips
-                    </button>
+                    </div>         
                 </div>
             </div>
         </React.Fragment>
     )
 }
-export default DriverAcceptCustomer;

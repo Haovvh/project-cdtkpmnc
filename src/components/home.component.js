@@ -1,19 +1,18 @@
 import React from "react";
 
 
-
-
-export default function Home() {
-  return (
-    <React.Fragment>
+export default function Home () {
+  
+    return (
       <div className="container ">
         <div className="col">
           <header className="jumbotron">
-            <h1>Home</h1>
+            <h3>Home</h3>
+            <h2>Xin chào </h2>
           </header>
+          </div>
+        <div className="col">          
         </div>
       </div>
-    </React.Fragment>
-
-  );
+    );
 }

@@ -32,20 +32,20 @@ class Login extends Component {
     };
   }
 
-  onChangeUsername(e) {
+  onChangeUsername(event) {
     this.setState({
-      username: e.target.value
+      username: event.target.value
     });
   }
 
-  onChangePassword(e) {
+  onChangePassword(event) {
     this.setState({
-      password: e.target.value
+      password: event.target.value
     });
   }
 
-  handleLogin(e) {
-    e.preventDefault();
+  handleLogin(event) {
+    event.preventDefault();
 
     this.setState({
       message: "",
@@ -56,11 +56,14 @@ class Login extends Component {
 
     if (this.checkBtn.context._errors.length === 0) {
       AuthService.login(this.state.username, this.state.password).then(
+        
         () => {
-          this.props.router.navigate("/profile");
+          console.log("success")
+          this.props.router.navigate("/");
           window.location.reload();
         },
         error => {
+          console.log(error)
           const resMessage =
             (error.response &&
               error.response.data &&
@@ -98,12 +101,12 @@ class Login extends Component {
             }}
           >
             <div className="form-group">
-              <label htmlFor="username">Username</label>
+              <label htmlFor="Username">Username</label>
               <Input
                 placeholder="User Name"
                 type="text"
                 className="form-control"
-                name="username"
+                name="Username"
                 value={this.state.username}
                 onChange={this.onChangeUsername}
                 validations={[required]}
