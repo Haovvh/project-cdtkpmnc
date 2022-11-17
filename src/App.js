@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import AuthService from "./services/auth.service";
 import Login from "./components/login.component";
 import RegisterUser from "./components/register.user";
 import RegisterDriver from "./components/register.driver";
@@ -10,9 +9,10 @@ import Home from "./components/home.component";
 import Profile from "./components/profile.component";
 import Driver from "./components/drivers/driver.component";
 import SupportStaff from "./components/supportstaff/supportstaff.component";
-import NewUser from "./components/newuser/newuser.component";
 import EventBus from "./common/EventBus";
 import Customer from "./components/customers/customer.component";
+import userService from "./apiService/user.service";
+import CallMobile from "./components/CallMobile/CallMobile.component"
 
 
 class App extends Component {
@@ -29,7 +29,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const user = AuthService.getCurrentUser();
+    const user = userService.getCurrentUser();
     
     if (user) {
       this.setState({        
@@ -50,7 +50,7 @@ class App extends Component {
   }
 
   logOut() {
-    AuthService.logout();
+    userService.logout();
     this.setState({
       isDriver: false,
       isCustomer: false,
@@ -90,7 +90,7 @@ class App extends Component {
 
             { currentUser && isSupportStaff  && (
               <li className="nav-item">
-                <Link to={"/newuser"} className="nav-link">
+                <Link to={"/callmobile"} className="nav-link">
                   Create User
                 </Link>
               </li>
@@ -155,11 +155,10 @@ class App extends Component {
             <Route path="/customer" element={<Customer />} />
             <Route path="/driver" element={<Driver/>} />
             <Route path="/supportstaff" element={<SupportStaff />} />
-            <Route path="/newuser" element={<NewUser />} />
+            <Route path="/callmobile" element={<CallMobile />} />
           </Routes>
         </div>
 
-        {/* <AuthVerify logOut={this.logOut}/> */}
       </div>
     );
   }

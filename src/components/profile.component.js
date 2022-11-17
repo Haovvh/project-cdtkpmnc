@@ -1,11 +1,11 @@
 import React from "react";
-import AuthService from "../services/auth.service";
 import ProfileUser from "./profile.User.component";
+import userService from "../apiService/user.service";
 
 
-const user = AuthService.getCurrentUser();
+
 export default function Profile (props) { 
-   
+  const user = userService.getCurrentUser();
     if (!user) {
       return null;
     }

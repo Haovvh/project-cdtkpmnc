@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
 import GoongAPI from "../../Goong/GoongAPI";
 import GoongMap from "../../Goong/GoongMap";
-import authService from "../../services/auth.service";
-import authHeader from "../../services/auth-header";
-import journeyService from "../../services/journey.service";
 import DriverInfo from "./driverInfo.component";
-import { MONEY_1KM_DISTANCE } from "../../public/const";
-import io from "socket.io-client";
+import { MONEY_CAR4, MONEY_CAR7, WEB_SOCKET } from "../../public/const";
+import callService from "../../apiService/call.service";
+import journeyService from "../../apiService/journey.service";
+import userService from "../../apiService/user.service";
+import customersService from "../../apiService/customers.service";
 
-const socket = io.connect(process.env.REACT_APP_WEBSOCKETHOST)
-const room = `01234567${authService.getCurrentUser().id}`;
+import * as io from "socket.io-client";
+
+
+
 const required = value => {
     if (!value) {
       return (
@@ -20,13 +22,14 @@ const required = value => {
     }
   };
 
-export default function BookDriver (props) {    
-    const id = authService.getCurrentUser().id;
-
-
+export default function BookDriver (props) {   
+    const socket = io.connect(WEB_SOCKET); 
+    const id = userService.getCurrentUser().id;
+    const [hiddenStatus, sethiddenStatus] = useState(false);
     const [message, setMessage] = useState("");
-    const [type, settype] = useState('CAR4');
+    const [vehicleType, setvehicleType] = useState('CAR4');
     const [journey, setJourney] = useState({
+        id: 0,
         origin: {
             placeId: "",
             lat: 0,
@@ -60,87 +63,40 @@ export default function BookDriver (props) {
         }
     });
 
-    //socket
-
-    socket.on("driverinfo", (data) => {
-        console.log(data)
-        setDriverInfo({
-            Fullname: data.Fullname,
-            Phone: data.Phone,
-            vehicleInfo: {
-                controlNumber: data.controlNumber,
-                type: data.type
-            }
-        })
-        setDisabledbutton(true)
-    })
-    
-    socket.on("successpassenger",  (data) => {
+    socket.on("customers-noti", (...args) => {
+        let listdriver = args[0];
+        console.log(listdriver)
+        // ...
         
-        setStatus("showtripinfo")
-        setJourney({
-            origin: {
-                placeId: "",
-                lat: 0,
-                lng: 0,
-                fullAddressInString: ""
-            },
-            destination : {
-                placeId: "",
-                lat: 0,
-                lng: 0,
-                fullAddressInString: ""
-            },
-            price: 0,
-            paymentMethod: "CASH",
-            pointCode: ""
-        })  
-        setDisabledbutton(false)
-        setDistance_km();
-        setDistance("")
-        setDisabled(false);
-        setDriverInfo({
-            Fullname: data.Fullname,
-            Phone: data.Phone,
-            vehicleInfo: {
-                controlNumber: data.controlNumber,
-                type: data.type
-            }
-        });    
-      })
+      });
 
-    useEffect( () => {
-        socket.emit("join_room", {
-            room: room
-        });
+      socket.on("finish-journey", (...args) => {
+        let listdriver = args[0];
+        console.log(listdriver)
+        // ...
         
-        //Lấy địa điểm đi thường xuyên
-        // journeyService.getAllJourneybyPassenger().then(
-        //     response => {
-        //         console.log(response.data)
-        //         if(response.data) {
-        //             //setPlaces(response.data)
-                    
-        //         } else {
+      });
 
-        //         }
-        //     }, error => {
-        //         console.log(error)
-        //         const resMessage =
-        //           (error.response &&
-        //             error.response.data &&
-        //             error.response.data.message) ||
-        //           error.message ||
-        //           error.toString();
-
-        //         }
-        // )
+    useEffect( () => {        
         
         //check xem có chuyến đi nào chưa hoàn thành không?
+        customersService.getFiveMostPlaces(id).then(
+            response => {
+                console.log(response.data);
+            }, error => {
+                console.log(error)
+            }
+        )
+        customersService.getFiveRecentCall(id).then(
+            response => {
+                console.log(response.data)
+            }, error => {
+                console.log(error)
+            }
+        )
 
         journeyService.getJourneybyCustomer(id).then(
           response => {
-            console.log(response.data)
             if(response.data) {
                 
               setDriverInfo({
@@ -211,7 +167,6 @@ export default function BookDriver (props) {
                     const jsonorigins = await origins.data.results[0].geometry.location.lat + ',' + origins.data.results[0].geometry.location.lng
     
                     const destinations = await GoongAPI.getGeocode(journey.destination.fullAddressInString);
-                    console.log(destinations.data.results[0].formatted_address)
 
                     const jsondestinations = await destinations.data.results[0].geometry.location.lat + ',' + destinations.data.results[0].geometry.location.lng
                     setJourney(prevState => ({
@@ -219,8 +174,8 @@ export default function BookDriver (props) {
                         origin: {
                             placeId: origins.data.results[0].place_id,
                             fullAddressInString: origins.data.results[0].formatted_address,
-                            lng: origins.data.results[0].geometry.location.lat,
-                            lat: origins.data.results[0].geometry.location.lng
+                            lng: origins.data.results[0].geometry.location.lng,
+                            lat: origins.data.results[0].geometry.location.lat
                         },
                         destination: {
                             placeId: destinations.data.results[0].place_id,
@@ -230,12 +185,8 @@ export default function BookDriver (props) {
                         }
                     }))
                     if (jsonorigins && jsondestinations) {
-                        console.log(" jsonorigins && jsondestinations ")
                         const distance = await GoongAPI.getDirection(jsonorigins,jsondestinations);                        
-                        const json = await distance.data.routes[0]                        
-                        console.log(json.legs[0].distance.text)
-                        console.log(json.legs[0].duration.text)
-                        console.log(json.overview_polyline.points);
+                        const json = await distance.data.routes[0]    
                         
                         setJourney(prevState => ({
                             ...prevState,
@@ -243,7 +194,7 @@ export default function BookDriver (props) {
                         }))
                                                 
                         setJourney(prevState => ({
-                            ...prevState,price: Math.round((json.legs[0].distance.value)*MONEY_1KM_DISTANCE/1000)
+                            ...prevState,price: Math.round((json.legs[0].distance.value)*MONEY_CAR4/1000)
                         }))
                         setDistance_km(parseInt(json.legs[0].distance.value)/1000)
                         setStatus("bookdriver")
@@ -259,28 +210,53 @@ export default function BookDriver (props) {
             }
             
         } else if (status === "bookdriver") {
-            console.log("Book driver")
-            //check connect xem được không? 
-
-            //socket gọi đến server tìm tài xế
-            socket.emit("calldriver", {               
-                
-                room: room,
-                //data gửi kèm đến server
-                CustomerId: authHeader().id,
-                origin: journey.origin,
-                destination: journey.destination,
-                pointCode: journey.pointCode,
-                price: journey.price,
-                Fullname: props.InfoCustomer.firstName + ' ' + props.InfoCustomer.lastName,
-                Phone: props.InfoCustomer.Phone,
-                type: type
-
-            });
+            //customerId, phone, callType, origin, destination
             
-            setStatus("completeTrip") 
-                   
-        
+            callService.call(id, props.InfoCustomer.phone,'WEB_APP', vehicleType ,journey.origin,journey.destination).then(
+                response => {
+                    if(response.data.id) {
+                        let callId = response.data.id;
+                        console.log("callId: " +  response.data.id)
+                         journeyService.createjourney(response.data.id , id, vehicleType, props.InfoCustomer.phone, journey.origin,journey.destination,
+                            journey.price,journey.paymentMethod,journey.pointCode).then(
+                                responses => {
+
+                                    if(responses.data.id){
+                                        console.log("journeyId: " + responses.data.id)
+                                        
+                                        journeyService.postJourneybyId(responses.data.id).then(
+                                            responsess=> {
+
+                                                console.log(responsess.status)
+                                                if(response.status === 200) {
+                                                    console.log("success ");
+                                                    setStatus("completeTrip") 
+                                                    sethiddenStatus(true);
+                                                }
+                                            }, error => {
+                                                console.log(error)
+                                            }
+                                        ).catch(error => {
+                                            console.log(error)
+                                        })
+                                    }
+                                }, error => {
+                                    console.log(error)
+                                }
+                            ).catch(error => {
+                                console.log(error)
+                            })
+                    }
+                    
+                    //setcallId(response.id);
+                    //có call ID trả về
+                }, error => {
+                    console.log(error)
+                }
+            ).catch(error => {
+                console.log(error)
+            })
+            
         }
         else if (status === "completeTrip") {
             console.log("completeTrip");
@@ -310,7 +286,7 @@ export default function BookDriver (props) {
     }
 
     const handleChange = (event) => {
-        settype(event.target.value)
+        setvehicleType(event.target.value)
     }
     //onChangePaymethod
     const onChangePaymethod = (event) => {
@@ -366,7 +342,7 @@ export default function BookDriver (props) {
                         <div className="col-5">
                             <div className="form-group">
                                 <label htmlFor="username">Car Type:</label>
-                                    <select value={type} onChange = {(event) =>{handleChange(event)}}>
+                                    <select value={vehicleType} onChange = {(event) =>{handleChange(event)}}>
                                         <option value="CAR4">Car 4 seat</option>
                                         <option value="CAR7">Car 7 seat</option>
                                         <option value="">Any</option>
@@ -391,10 +367,10 @@ export default function BookDriver (props) {
                             <div className="col-5 container">
                                 <button disabled={disabledbutton} className="btn btn-primary" onClick={() => {
                                 handleOnClick()}}>
-                                {(status === "showtripinfo") ? "Show Trip Info" : 
+                                {(status === "showtripinfo") ? "Trip Info" : 
                                 (status === "bookdriver") ? "Book Driver" : 
                                 (status === "completeTrip") ? "Complete Trip" : 
-                                "Show Trip Info"}
+                                "Trip Info"}
                                 </button>
                             </div>
                             <div className="col-5 container">

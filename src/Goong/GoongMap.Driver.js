@@ -1,17 +1,12 @@
-import React, {useEffect} from 'react';
-import { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import ReactMapGL, { GeolocateControl} from '@goongmaps/goong-map-react';
 import { MAP_KEY } from './GoongKEY';
-import io from "socket.io-client";
-import authHeader from '../services/auth-header';
+import driverService from '../apiService/driver.service';
+import userService from '../apiService/user.service';
 
-const WEB_SOCKET = 'http://localhost:9092/drivers'
 
-const socket = io.connect(process.env.REACT_APP_WEBSOCKETHOST)
-export default function GongMapDriver(props) {
-  const param = { query: 'token=' }
-          const socket = socketIOClient(WEB_SOCKET,param )
-
+export default function GoongMapDriver(props) {
+  const driverId = userService.getCurrentUser().id;
   const geolocateControlStyle = {
     right: 10,
     top: 10
@@ -22,9 +17,7 @@ export default function GongMapDriver(props) {
     longitude: 106.6657,
     zoom: 14
   });
-  socket.on('drivers', (data) => {
-    console.log(data)
-  })
+  
     
 
   useEffect (()=>{
@@ -32,22 +25,17 @@ export default function GongMapDriver(props) {
       if (props.Online === "Online") {
           delay = 5000
       } else {
-        delay = 5000
+        delay = 100000
       }
       const intervalId = setInterval( () => {
+        driverService.updatelocation(driverId, viewport.latitude, viewport.longitude).then(
+          reponse => {
+            console.log(reponse)
+          }, error => {
+            console.log(error)
+          }
+        )
         
-          //process.env.REACT_APP_WEBSOCKETHOST,
-          socket.emit('drivers', {
-            id: 'abc',
-            LAT: 'def',
-            LNG: 'fgh'
-          })
-
-          // socket.emit("update_lat_lng", {
-          //   id: authHeader().id,
-          //   LAT: viewport.latitude,
-          //   LNG: viewport.longitude
-          // });
       }, delay) 
       return () => clearInterval(intervalId); //This is important   
     

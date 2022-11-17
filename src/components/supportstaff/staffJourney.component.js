@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import GoongAPI from "../../Goong/GoongAPI";
 import DriverJourney from "../customers/driverInfo.component";
-import passengerService from "../../services/user.service";
-import { MONEY_1KM_DISTANCE } from "../../public/const";
+import { MONEY_CAR4,MONEY_CAR7 } from "../../public/const";
+import userService from "../../apiService/user.service";
+import { WEB_SOCKET } from "../../public/const";
+import * as io from "socket.io-client";
 
-import io from "socket.io-client";
-
-const socket = io.connect(process.env.REACT_APP_WEBSOCKETHOST)
-const room = `01234567${authService.getCurrentUser().id}`;
 
 const required = value => {
     if (!value) {
@@ -21,10 +19,8 @@ const required = value => {
 
 
 export default function StaffJourney (props) {
-    
-
-    // const param = { query: 'token=' }
-    // const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
+    const id = userService.getCurrentUser().id;
+    const socket = io.connect(WEB_SOCKET);
     const [type, setType] = useState();
     const [message, setMessage] = useState("");
     const [journey, setJourney] = useState({
@@ -64,11 +60,11 @@ export default function StaffJourney (props) {
         }
     });
     useEffect( ()=> {
-        socket.emit("join_room", {
-            room: room
-        });
+        // socket.emit("join_room", {
+        //     room: room
+        // });
 
-        passengerService.getPassenger().then(
+        userService.getUserbyId(id).then(
             response => {
                 if(response.data.resp) {
                     setInfo(prevState => ({
@@ -175,7 +171,6 @@ export default function StaffJourney (props) {
                     const jsonorigins = await origins.data.results[0].geometry.location.lat + ',' + origins.data.results[0].geometry.location.lng
     
                     const destinations = await GoongAPI.getGeocode(journey.destination.fullAddressInString);
-                    console.log(destinations.data.results[0].formatted_address)
 
                     const jsondestinations = await destinations.data.results[0].geometry.location.lat + ',' + destinations.data.results[0].geometry.location.lng
                     setJourney(prevState => ({
@@ -193,17 +188,12 @@ export default function StaffJourney (props) {
                         }
                     }))
                     if (jsonorigins && jsondestinations) {
-                        console.log(" jsonorigins && jsondestinations ")
                         const distance = await GoongAPI.getDirection(jsonorigins,jsondestinations);                        
-                        const json = await distance.data.routes[0]                        
-                        console.log(json.legs[0].distance.text)
-                        console.log(json.legs[0].duration.text)
-                        console.log(json.overview_polyline.points);
-                        
+                        const json = await distance.data.routes[0]   
                         setJourney(prevState => ({
                             ...prevState,
                             pointCode: json.overview_polyline.points,
-                            price: Math.round((json.legs[0].distance.value)*MONEY_1KM_DISTANCE/1000)
+                            price: Math.round((json.legs[0].distance.value)*MONEY_CAR4/1000)
                         }))
                         
                         setDistance_km(parseInt(json.legs[0].distance.value)/1000)
@@ -220,7 +210,6 @@ export default function StaffJourney (props) {
             }
             
         } else if (status === "bookdriver") {
-            console.log("Book driver")
             //check connect xem được không? 
             
             //socket gọi đến server tìm tài xế

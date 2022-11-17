@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import driverService from "../services/driver.service";
-import authService from "../services/auth.service";
+import driverService from "../apiService/driver.service";
+import userService from "../apiService/user.service";
 
 export default function RegisterDriver () {
   
-  const Id = authService.getCurrentUser().id;
+  const Id = userService.getCurrentUser().id;
   const [controlNumber, setcontrolNumber] = useState("")
   const [type, settype] = useState("CAR4")
   const [personalId, setpersonalId] = useState("");

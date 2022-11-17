@@ -3,7 +3,7 @@ import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 
-import AuthService from "../services/auth.service";
+import userService from "../apiService/user.service";
 
 import { withRouter } from '../common/with-router';
 
@@ -55,10 +55,9 @@ class Login extends Component {
     this.form.validateAll();
 
     if (this.checkBtn.context._errors.length === 0) {
-      AuthService.login(this.state.username, this.state.password).then(
+      userService.loginUser(this.state.username, this.state.password).then(
         
         () => {
-          console.log("success")
           this.props.router.navigate("/");
           window.location.reload();
         },

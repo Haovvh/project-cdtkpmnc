@@ -15,7 +15,7 @@ export default function CustomerInfo(props) {
             <div className=" card-container">
                 <div className=" col-md-12">
                     <div className="form-group">
-                        <label htmlFor="username">FullName Passenger:</label>
+                        <label htmlFor="username">Customer:</label>
                         <input
                             type="text"
                             className="form-control"
@@ -37,7 +37,7 @@ export default function CustomerInfo(props) {
                         <input
                             type="text"
                             className="form-control"
-                            value={props.info.origin_Fulladdress}
+                            value={props.info.origin.fullAddressInString}
                             disabled
                         />
                     </div>
@@ -46,7 +46,7 @@ export default function CustomerInfo(props) {
                         <input
                             type="text"
                             className="form-control"
-                            value={props.info.destination_Fulladdress}
+                            value={props.info.destination.fullAddressInString}
                             disabled
                         />
                     </div>    

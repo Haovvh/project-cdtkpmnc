@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import userByPhoneService from "../../services/user-by-phone.service";
 import Input from "react-validation/build/input";
 import Form from "react-validation/build/form";
 
@@ -14,7 +13,7 @@ const required = value => {
   }
 };
 
-export default function NewUser () {
+export default function CallMobile () {
     const [message, setMessage] = useState("");
     const [NewInfo, setNewInfo] = useState({
         Phone: "",
@@ -24,6 +23,7 @@ export default function NewUser () {
 
 
     const handleClickNewUSer = () => {
+      /*
         userByPhoneService.postUser(NewInfo.Fullname, NewInfo.Phone, NewInfo.Date_of_birth).then(
           response => {
             console.log(response.data)
@@ -43,6 +43,7 @@ export default function NewUser () {
             console.log(error);
           }
         )
+        */
       }
 
     return (

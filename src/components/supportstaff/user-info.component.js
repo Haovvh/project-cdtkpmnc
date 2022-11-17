@@ -1,5 +1,5 @@
 import React from "react";
-import "../../css/table.css"
+import "../../App.css"
 
 export default function UserInfo(props) {
 
@@ -39,9 +39,9 @@ export default function UserInfo(props) {
                             {props.places.map((val, key) => {
                                 return (
                                     <tr key={key}>
-                                        <td className="col-3">{val.start_time}</td>
-                                        <td className="col-3">{val.origin_Fulladdress}</td>
-                                        <td className="col-3">{val.destination_Fulladdress}</td>
+                                        <td className="col-3">{val.modified_date}</td>
+                                        <td className="col-3">{val.origin.fullAddressInString}</td>
+                                        <td className="col-3">{val.destination.fullAddressInString}</td>
                                     </tr>
                                 )
                             })}
@@ -63,7 +63,7 @@ export default function UserInfo(props) {
                             {props.countPlace.map((val, key) => {
                                 return (
                                     <tr key={key}>
-                                        <td className="col-3">{val.origin_Fulladdress}</td>
+                                        <td className="col-3">{val.origin.fullAddressInString}</td>
                                         <td className="col-3">{val.Count}</td>
                                     </tr>
                                 )

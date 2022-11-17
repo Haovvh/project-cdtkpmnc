@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
-import userService from "../../services/user.service";
+import userService from "../../apiService/user.service";
 import BookDriver from "./bookdriver.component";
-import authService from "../../services/auth.service";
-
-
+import { URL_WEB } from "../../public/const";
 
 export default function Customer () {
 
   
-  const id = authService.getCurrentUser().id;
+  const id = userService.getCurrentUser().id;
   const [InfoCustomer, setInfoCustomer] = useState({
     firstName: "",
     lastName: "",
@@ -19,14 +17,14 @@ export default function Customer () {
   const [message, setMessage] = useState("");
   useEffect( () =>{
 
-    userService.getUser(id).then(
+    userService.getUserbyId(id).then(
       response => {
         if(response.data) {
           console.log(response.data)
           setInfoCustomer({
             firstName: response.data.firstName,
             lastName: response.data.lastName,
-            Phone: response.data.Phone  
+            phone: response.data.phone  
           })
         }
         // if(response.data.resp) {
@@ -44,10 +42,10 @@ export default function Customer () {
           error.response.data.message) ||
         error.message ||
         error.toString();
-        // setMessage(resMessage)
-        // localStorage.removeItem("user");
-        // alert("Token is Exprise. Please Login");
-        // window.location.assign("http://localhost:8082/login")
+        setMessage(resMessage)
+        userService.logoutUser();
+        alert("Token is Exprise. Please Login");
+        window.location.assign(URL_WEB)
       }
     )
   },[])

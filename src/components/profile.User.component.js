@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import authService from "../services/auth.service";
-import usersService from "../services/user.service";
+import usersService from "../apiService/user.service";
 
 
 const required = value => {
@@ -14,7 +13,7 @@ const required = value => {
 };
 
 export default function ProfileUser (props) {  
-  const Id = authService.getCurrentUser().id;
+  const Id = usersService.getCurrentUser().id;
 
   const [InfoCustomer, setInfoCustomer] = useState({
     firstName: "",
@@ -33,7 +32,7 @@ export default function ProfileUser (props) {
   const [message, setMessage] = useState("");
 
   useEffect( () => {
-    usersService.getUser(Id).then(
+    usersService.getUserbyId(Id).then(
       response => {
         if(response.data) {
           console.log(response.data);

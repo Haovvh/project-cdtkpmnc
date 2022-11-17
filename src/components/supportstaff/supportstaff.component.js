@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import userByPhoneService from "../../services/user-by-phone.service";
 import StaffJourney from "./staffJourney.component";
 import UserInfo from "./user-info.component";
-import passengerService from "../../services/user.service";
+import userService from "../../apiService/user.service";
+import { URL_WEB } from "../../public/const";
 
 
 const required = value => {
@@ -16,7 +16,7 @@ const required = value => {
 };
 
 export default function SupportStaff () {  
-  
+  const id = userService.getCurrentUser().id;
   const [message, setMessage] = useState("");
   const [hidden, setHidden] = useState(false)
   const [show, setShow] = useState(true)
@@ -37,16 +37,16 @@ export default function SupportStaff () {
   const [countPlace, setCountPlace]= useState([]);
 
   useEffect( () =>{
-    passengerService.getPassenger().then(
+    userService.getUserbyId(id).then(
       response => {
         console.log(response.data.data)
         if(response.data.resp) {
           setSupportStaff(prevState => ({
             ...prevState,
-            SupportStaff_ID: response.data.data.Passenger_ID,
-            Fullname: response.data.data.Fullname, 
-            Phone: response.data.data.Phone,
-            role: response.data.data.role
+            SupportStaff_ID: response.data.id,
+            Fullname: response.data.Fullname, 
+            Phone: response.data.Phone,
+            role: response.data.role
           }))
         } else {
           setMessage(response.data.message)
@@ -59,15 +59,16 @@ export default function SupportStaff () {
           error.message ||
           error.toString();  
           setMessage(resMessage)
-          localStorage.removeItem("user");
+          userService.logoutUser();
           alert("Token is Expires. Please Login");
-          window.location.assign("http://localhost:8082/login")
+          window.location.assign(URL_WEB)
       }
     )
     
   },[])
 
   const handleClick = () => {
+    /*
     userByPhoneService.getUserbyPhone(Info.Phone).then(
       response => {
         if(response.data.resp) {
@@ -97,6 +98,7 @@ export default function SupportStaff () {
           error.toString();  
           setMessage(resMessage)               
         })
+        */
   }  
 
   const handlePhone =  (event) => {
