@@ -27,15 +27,17 @@ export default function Driver (){
   const [Online, setOnline] = useState("");
   const [status, setStatus] = useState("Offline")
   const [InfoCustomer, setInfoCustomer] = useState({})
+  const [journeyId, setJourneyId] = useState(0);
 
   socket.on("drivers", (...args) => {
     let listdriver = args[0];
     console.log(args[0])
+    setJourneyId(listdriver.journey.id);
     console.log(listdriver.journey)
     console.log(listdriver.drivers)
     for(let i=0; i<listdriver.drivers.length;i++) {
       if(driverId === listdriver.drivers[i]) {
-        setStatus("isPassenger")
+        setStatus("isBookDriver")
       }
     }
     // ...
@@ -187,50 +189,44 @@ export default function Driver (){
       setOnline("Online")
       setStatus("Online");
 
-    } else if(status === "isPassenger") {
+    } else if(status === "isBookDriver") {
       //goi api tạo journey
       console.log(" vao status co khach")
-      journeyService.createjourney(InfoCustomer.id, 
-        driverId, InfoCustomer.price,
-         InfoCustomer.origin.placeId,
-        InfoCustomer.origin.fullAddressInString, 
-        InfoCustomer.origin.placeId,
-        InfoCustomer.destination.fullAddressInString, 
-        InfoCustomer.price,
-        InfoCustomer.pointCode).then(
-          response => {
-            if(response.data) {
-              //setMessage(response.data.message)
-              console.log(response.data)
-              
-              // socket.emit("driveracceptjourney", {
-              //   room: room,
-              //   Driver_ID: driverInfo.id,
-              //   Phone: driverInfo.Phone,
-              //   Fullname: driverInfo.Fullname,
-
-              //   Car_type: driverInfo.Car_type,
-              //   Car_code: driverInfo.Car_code,
-              //   Car_seat: driverInfo.Car_seat,
-              //   Car_color: driverInfo.Car_color
-              // })                  
-              setStatus("Donetrip")
-            } else {
-              setMessage(response.data.message)
-              setStatus("Online")
-              setInfoCustomer({})
-            }     
-          },
-          error => {
-            const resMessage =
-              (error.response &&
-                error.response.data &&
-                error.response.data.message) ||
-              error.message ||
-              error.toString();
-            setMessage(resMessage)                  
-            } 
-         )      
+      journeyService.putJourneybyDriver(journeyId, driverId).then(
+        response => {
+          console.log(response);
+        }, error => {
+          console.log(error)
+        }
+      )
+      // journeyService.createjourney(InfoCustomer.id, 
+      //   driverId, InfoCustomer.price,
+      //    InfoCustomer.origin.placeId,
+      //   InfoCustomer.origin.fullAddressInString, 
+      //   InfoCustomer.destination.placeId,
+      //   InfoCustomer.destination.fullAddressInString, 
+      //   InfoCustomer.price,
+      //   InfoCustomer.pointCode).then(
+      //     response => {
+      //       if(response.data) {
+      //         console.log(response.data)
+      //         setStatus("Donetrip")
+      //       } else {
+      //         setMessage(response.data.message)
+      //         setStatus("Online")
+      //         setInfoCustomer({})
+      //       }     
+      //     },
+      //     error => {
+      //       const resMessage =
+      //         (error.response &&
+      //           error.response.data &&
+      //           error.response.data.message) ||
+      //         error.message ||
+      //         error.toString();
+      //       setMessage(resMessage)                  
+      //       } 
+      //    )      
 
     } else if(status === "Donetrip") {
       //gọi api update journey thành công
@@ -261,6 +257,10 @@ export default function Driver (){
       )      
     }    
   }
+
+  const handleOnClickCancel = () => {
+    window.location.reload();
+  }
   
     return (
       <React.Fragment>
@@ -289,12 +289,12 @@ export default function Driver (){
             handleOnline()
           }}>
             {(status === "Offline") ? 'Online' : 
-          ((status === "Online") ? 'Offline' : ((status === "isPassenger") ? 'Accept' : "Done Trip"))}</button>
+          ((status === "Online") ? 'Offline' : ((status === "isBookDriver") ? 'Accept' : "Done Trip"))}</button>
             </div>
             <div className="col-6">
             {(status === "isPassenger") && (
             <button   className="btn btn-primary"
-            onClick={() => window.location.reload()}>
+            onClick={() => {handleOnClickCancel()}}>
             Cancel
           </button>)}
             </div>

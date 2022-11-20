@@ -50,7 +50,7 @@ class App extends Component {
   }
 
   logOut() {
-    userService.logout();
+    userService.logoutUser();
     this.setState({
       isDriver: false,
       isCustomer: false,

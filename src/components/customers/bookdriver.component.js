@@ -230,7 +230,7 @@ export default function BookDriver (props) {
                                                 console.log(responsess.status)
                                                 if(response.status === 200) {
                                                     console.log("success ");
-                                                    setStatus("completeTrip") 
+                                                    setStatus("awaitdriver") 
                                                     sethiddenStatus(true);
                                                 }
                                             }, error => {
@@ -257,7 +257,7 @@ export default function BookDriver (props) {
                 console.log(error)
             })
             
-        }
+        } 
         else if (status === "completeTrip") {
             console.log("completeTrip");
             setJourney({
@@ -295,6 +295,20 @@ export default function BookDriver (props) {
             paymentMethod: event.target.value })
         )
     }
+
+    const  handleOnClickCancel = () => {
+        if(status === 'awaitdriver') {
+            journeyService.cancelJourney(id).then(
+                response => {
+                    console.log(response)
+                }, error => {
+                    console.log(error)
+                }
+            )
+        } 
+        window.location.reload();      
+      }
+
     //
 //
     return (
@@ -375,7 +389,7 @@ export default function BookDriver (props) {
                             </div>
                             <div className="col-5 container">
                                 <button className="btn btn-primary" disabled={disabledbutton} onClick={() => {
-                                window.location.reload();}}>Cancel</button>
+                                handleOnClickCancel()}}>Cancel</button>
                             </div>
                         </div>
                     </div>

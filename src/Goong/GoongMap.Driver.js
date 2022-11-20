@@ -28,9 +28,10 @@ export default function GoongMapDriver(props) {
         delay = 100000
       }
       const intervalId = setInterval( () => {
-        driverService.updatelocation(driverId, viewport.latitude, viewport.longitude).then(
+        if(viewport.latitude >0 && viewport.longitude >0 )
+        driverService.updateLocation(driverId, viewport.latitude, viewport.longitude).then(
           reponse => {
-            console.log(reponse)
+            console.log(reponse.status)
           }, error => {
             console.log(error)
           }
