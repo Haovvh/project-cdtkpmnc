@@ -4,12 +4,12 @@ import authHeader from './auth-header';
 
 class Customers {  
   
-  getFiveMostPlaces(id) {
-    return axios.get(process.env.REACT_APP_API_URL + `/customer/${id}/mostPlaces`, 
+  getFiveMostPlaces(phone) {
+    return axios.get(process.env.REACT_APP_API_URL + `/customer/${phone}/mostPlaces`, 
     { headers: authHeader() });
   }
-  getFiveRecentCall(id) {
-    return axios.get(process.env.REACT_APP_API_URL + `/customer/${id}/recentCalls`, 
+  getFiveRecentCall(phone) {
+    return axios.get(process.env.REACT_APP_API_URL + `/customer/${phone}/recentCalls`, 
     { headers: authHeader() });
   }  
 }

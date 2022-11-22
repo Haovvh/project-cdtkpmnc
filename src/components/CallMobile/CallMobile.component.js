@@ -16,9 +16,9 @@ const required = value => {
 export default function CallMobile () {
     const [message, setMessage] = useState("");
     const [NewInfo, setNewInfo] = useState({
-        Phone: "",
-        Fullname: "",
-        Date_of_birth: new Date().toISOString().substring(0, 10)
+        phone: "",
+        firstName: "",
+        lastName: ""
       })
 
 
@@ -64,39 +64,39 @@ export default function CallMobile () {
                 <Form
                 >
                 <div className="form-group">
-                    <label htmlFor="phoneuser">Phone User: </label>
+                    <label htmlFor="phoneuser">Phone User</label>
                     <Input
                       value={NewInfo.Phone}
                       placeholder="Phone User"
                       type="phone"
                       className="form-control"
                       validations={[required]}
-                      onChange={(event) => setNewInfo(prevState => ({...prevState, Phone: event.target.value}))}
+                      onChange={(event) => setNewInfo(prevState => ({...prevState, phone: event.target.value}))}
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="phonecustomer">FullName: </label>
+                    <label htmlFor="phonecustomer">FirstName </label>
                     <Input
-                      value={NewInfo.Fullname}
-                      placeholder="Fullname"
-                      type="phone"
+                      value={NewInfo.firstName}
+                      placeholder="First Name"
+                      type="text"
                       className="form-control"
                       validations={[required]}
-                      onChange={(event) => setNewInfo(prevState => ({...prevState,Fullname: event.target.value}))}
+                      onChange={(event) => setNewInfo(prevState => ({...prevState,firstName: event.target.value}))}
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="">Date of birth: </label>
+                    <label htmlFor="LastName">LastName </label>
                     <Input
-                      value={NewInfo.Date_of_birth}
-                      placeholder="Date of birth"
-                      type="date"
+                      value={NewInfo.lastName}
+                      placeholder="Last Name"
+                      type="text"
                       className="form-control"
                       validations={[required]}
-                      onChange={(event) => setNewInfo(prevState => ({...prevState, Date_of_birth: event.target.value}))}
+                      onChange={(event) => setNewInfo(prevState => ({...prevState,lastName: event.target.value}))}
                     />
-                  </div>
-                </Form>              
+                  </div>                  
+                </Form>             
       
               </div>
               <div>        

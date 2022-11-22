@@ -39,6 +39,10 @@ class User {
     return axios.get(process.env.REACT_APP_API_URL + `/user/${id}`, 
     { headers: authHeader() });
   }
+  getDriverbyId(id) {
+    return axios.get(process.env.REACT_APP_API_URL + `/user/${id}`, 
+    { headers: authHeader() });
+  }
   putUserCustomer(id, firstName, lastName, phone, email,  ) {
     return axios.put(process.env.REACT_APP_API_URL + `/user/${id}`,{
       firstName, lastName, phone, email

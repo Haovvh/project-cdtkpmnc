@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import GoongAPI from "../../Goong/GoongAPI";
+import mapService from "../../apiService/map.service";
 import GoongMap from "../../Goong/GoongMap";
 import DriverInfo from "./driverInfo.component";
 import { MONEY_CAR4, MONEY_CAR7, WEB_SOCKET } from "../../public/const";
@@ -48,7 +48,15 @@ export default function BookDriver (props) {
     })
 
     const [status, setStatus] = useState("showtripinfo")
-    const [places, setPlaces] = useState([])
+    const [places, setPlaces] = useState([
+        {fullAddressInString: "",
+        id: 0,
+        lat: 0,
+        lng: 0,
+        placeId: "wTVBnNQqnCpmwk45s0mLgGbDc7WvdKqE8bUZJ-7VO-7ZWtlX2sXS2-VWlbwm3d4ezU2FRK4BNSranZXuUtEFC_1PAZQI",
+        placeName: ""
+    }
+    ])
     const [distance_km, setDistance_km] = useState();
     const [distance, setDistance] = useState("")
     const [disabled, setDisabled] = useState(false);
@@ -66,6 +74,10 @@ export default function BookDriver (props) {
     socket.on("customers-noti", (...args) => {
         let listdriver = args[0];
         console.log(listdriver)
+        if(listdriver.customerId === id){
+            setStatus("completeTrip");
+            setDisabledbutton(true);
+        }
         // ...
         
       });
@@ -73,6 +85,8 @@ export default function BookDriver (props) {
       socket.on("finish-journey", (...args) => {
         let listdriver = args[0];
         console.log(listdriver)
+        alert("Done Trip");
+        window.location.reload();
         // ...
         
       });
@@ -80,15 +94,22 @@ export default function BookDriver (props) {
     useEffect( () => {        
         
         //check xem có chuyến đi nào chưa hoàn thành không?
-        customersService.getFiveMostPlaces(id).then(
+        customersService.getFiveMostPlaces(props.InfoCustomer.phone).then(
             response => {
-                console.log(response.data);
+                console.log(response)
+                if(response.length > 0 ){
+                    
+                    setPlaces(response.data)
+                }
             }, error => {
                 console.log(error)
             }
         )
-        customersService.getFiveRecentCall(id).then(
+        customersService.getFiveRecentCall(props.InfoCustomer.phone).then(
             response => {
+                if(response.data.length > 0) {
+                    
+                }
                 console.log(response.data)
             }, error => {
                 console.log(error)
@@ -98,22 +119,34 @@ export default function BookDriver (props) {
         journeyService.getJourneybyCustomer(id).then(
           response => {
             if(response.data) {
-                
-              setDriverInfo({
-                Fullname: response.data.Fullname,
-                Phone: response.data.Phone,
-                vehicleInfo: {
-                    controlNumber: response.data.controlNumber,
-                    type: response.data.type
+                if(response.data.driverId) {
+                    userService.getDriverbyId(response.data.driverId).then(
+                        response => {
+                            if(response.data) {
+                                setDriverInfo({
+                                    Fullname: response.data.firstName + " " + response.data.lastName,
+                                    Phone: response.data.phone,
+                                    vehicleInfo: {
+                                        controlNumber: response.data.vehicleInfo.controlNumber,
+                                        type: response.data.vehicleInfo.type
+                                    }
+                                  })
+                                  setDisabledbutton(true);
+                            }
+                            
+                        }, error => {
+                            console.log(error)
+                        }
+                    )
                 }
-              })
+              
               setJourney(prevState => ({
                 ...prevState,
                 origin: {
-                    fullAddressInString: response.data.fullAddressInString
+                    fullAddressInString: response.data.origin.fullAddressInString
                 },
                 destination: {
-                    fullAddressInString: response.data.fullAddressInString
+                    fullAddressInString: response.data.destination.fullAddressInString
                 },
                 pointCode: response.data.pointCode
               }))
@@ -161,12 +194,11 @@ export default function BookDriver (props) {
             try {
                 if (journey.origin.fullAddressInString  && journey.destination.fullAddressInString ) {
 
-                    console.log("Khong duoc null");
-                    const origins = await GoongAPI.getGeocode(journey.origin.fullAddressInString);
+                    const origins = await mapService.getGeocode(journey.origin.fullAddressInString);
 
                     const jsonorigins = await origins.data.results[0].geometry.location.lat + ',' + origins.data.results[0].geometry.location.lng
     
-                    const destinations = await GoongAPI.getGeocode(journey.destination.fullAddressInString);
+                    const destinations = await mapService.getGeocode(journey.destination.fullAddressInString);
 
                     const jsondestinations = await destinations.data.results[0].geometry.location.lat + ',' + destinations.data.results[0].geometry.location.lng
                     setJourney(prevState => ({
@@ -185,7 +217,7 @@ export default function BookDriver (props) {
                         }
                     }))
                     if (jsonorigins && jsondestinations) {
-                        const distance = await GoongAPI.getDirection(jsonorigins,jsondestinations);                        
+                        const distance = await mapService.getDirection(jsonorigins,jsondestinations);                        
                         const json = await distance.data.routes[0]    
                         
                         setJourney(prevState => ({
@@ -248,8 +280,6 @@ export default function BookDriver (props) {
                             })
                     }
                     
-                    //setcallId(response.id);
-                    //có call ID trả về
                 }, error => {
                     console.log(error)
                 }
@@ -259,29 +289,7 @@ export default function BookDriver (props) {
             
         } 
         else if (status === "completeTrip") {
-            console.log("completeTrip");
-            setJourney({
-                origin: {
-                    placeId: "",
-                    lat: 0,
-                    lng: 0,
-                    fullAddressInString: ""
-                },
-                destination : {
-                    placeId: "",
-                    lat: 0,
-                    lng: 0,
-                    fullAddressInString: ""
-                },
-                price: 0,
-                paymentMethod: "CASH",
-                pointCode: ""
-            })
-            setDistance_km();
-            setDistance("");
-            setStatus("showtripinfo");
-            setDisabled(false)
-            setDisabledbutton(false)
+            window.location.reload();
         }        
     }
 
@@ -332,7 +340,7 @@ export default function BookDriver (props) {
                         />
                         <datalist id="placeFrom">
                             {places.map((item, key) => 
-                            <option key = {key} value={item.origin_Fulladdress}/>)} 
+                            <option key = {key} value={item.fullAddressInString}/>)} 
                         </datalist>
                     </div>
                     <div className="form-group">
@@ -349,7 +357,7 @@ export default function BookDriver (props) {
                         />
                         <datalist id="placeTo">
                             {places.map((item, key) => 
-                            <option key = {key} value={item.origin_Fulladdress}/>)} 
+                            <option key = {key} value={item.fullAddressInString}/>)} 
                         </datalist>
                     </div>
                     <div className="row">

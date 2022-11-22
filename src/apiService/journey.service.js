@@ -35,14 +35,18 @@ class Journey {
   }
   cancelJourney(id) {
     return axios.put(process.env.REACT_APP_API_URL + `/journey/${id}/cancel`, 
+    {},
     { headers: authHeader() });
   }
   finishJourney(id) {
-    return axios.put(process.env.REACT_APP_API_URL + `/journey/${id}/finish`, 
+    return axios.put(process.env.REACT_APP_API_URL + `/journey/${id}/finish`, {
+
+    },
     { headers: authHeader() });
   }
   putJourneybyDriver(id, driverId) {
     return axios.put(process.env.REACT_APP_API_URL + `/journey/${id}/driver/${driverId}`, 
+    {},
     { headers: authHeader() });
   } 
 }

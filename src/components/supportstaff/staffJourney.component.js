@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import GoongAPI from "../../Goong/GoongAPI";
+import mapService from "../../apiService/map.service";
 import DriverJourney from "../customers/driverInfo.component";
 import { MONEY_CAR4,MONEY_CAR7 } from "../../public/const";
 import userService from "../../apiService/user.service";
@@ -69,7 +69,7 @@ export default function StaffJourney (props) {
                 if(response.data.resp) {
                     setInfo(prevState => ({
                         ...prevState,
-                        SupportStaff_ID: response.data.data.Passenger_ID,
+                        SupportStaff_ID: response.data.data.customerId,
                         Fullname: response.data.data.Fullname,
                         Phone: response.data.data.Phone
                     }))
@@ -84,64 +84,6 @@ export default function StaffJourney (props) {
 
     },[])
 
-    // socket.on("driverinfo", (data) => {
-    //     console.log(data)
-    //     setDriverInfo({
-    //         Fullname: data.Fullname,
-    //         Phone: data.Phone,
-    //         vehicleInfo: {
-    //             controlNumber: data.controlNumber,
-    //             type: data.type
-    //         }
-    //     })
-    // })
-    
-    // socket.on("successpassenger",  (data) => {
-    //     console.log("success passenger");
-    //     setDistance_km()
-    //     setDistance("")
-    //     setDriverInfo({
-    //         Fullname: "",
-    //         Phone: "",
-    //         vehicleInfo: {
-    //             controlNumber: "",
-    //             type: "CAR4"
-    //         }
-    //     })
-    //     setStatus("showtripinfo")
-    //     setDisabled(false)
-    //     setDistance("")
-    //     setJourney({
-    //         origin: {
-    //             placeId: "",
-    //             lat: 0,
-    //             lng: 0,
-    //             fullAddressInString: ""
-    //         },
-    //         destination : {
-    //             placeId: "",
-    //             lat: 0,
-    //             lng: 0,
-    //             fullAddressInString: ""
-    //         },
-    //         price: 0,
-    //         paymentMethod: "CASH",
-    //         pointCode: ""
-    //     })  
-    //     setMessage("");
-    
-    //     setInfo({
-    //         SupportStaff_ID: "",
-    //         Phone: "",
-    //         Fullname: ""
-    //     });
-    //     setDisabled(false);    
-    //   })
-    
-        // mở nhận socket tên broadcat       
-
-    
-    //lấy giá trị trong textbox 
     const handlePlaceFrom = (event) => {   
 
         setJourney(prevState => ({
@@ -159,18 +101,18 @@ export default function StaffJourney (props) {
             }
         }))
     }
-    //event click
+
     const handleOnClick = async () => {
         if(status === "showtripinfo") {
             try {
                 if (journey.origin.fullAddressInString && journey.destination.fullAddressInString ) {
-                    console.log("Not Null")
 
-                    const origins = await GoongAPI.getGeocode(journey.origin.fullAddressInString);
+
+                    const origins = await mapService.getGeocode(journey.origin.fullAddressInString);
 
                     const jsonorigins = await origins.data.results[0].geometry.location.lat + ',' + origins.data.results[0].geometry.location.lng
     
-                    const destinations = await GoongAPI.getGeocode(journey.destination.fullAddressInString);
+                    const destinations = await mapService.getGeocode(journey.destination.fullAddressInString);
 
                     const jsondestinations = await destinations.data.results[0].geometry.location.lat + ',' + destinations.data.results[0].geometry.location.lng
                     setJourney(prevState => ({
@@ -188,7 +130,7 @@ export default function StaffJourney (props) {
                         }
                     }))
                     if (jsonorigins && jsondestinations) {
-                        const distance = await GoongAPI.getDirection(jsonorigins,jsondestinations);                        
+                        const distance = await mapService.getDirection(jsonorigins,jsondestinations);                        
                         const json = await distance.data.routes[0]   
                         setJourney(prevState => ({
                             ...prevState,
@@ -209,39 +151,13 @@ export default function StaffJourney (props) {
                 console.log(error)
             }
             
-        } else if (status === "bookdriver") {
-            //check connect xem được không? 
-            
-            //socket gọi đến server tìm tài xế
-            // socket.emit("calldriver", {
-            //     socket_ID: socket.id,
-            //     SupportStaff_ID: Info.SupportStaff_ID,
-            //     User_ID: props.Info.User_ID,
-            //     //data gửi kèm đến server
-            //     origin: {
-            //         placeId: journey.origin.placeId,
-            //         fullAddressInString: journey.origin.fullAddressInString,
-            //         lat: journey.origin.lat,
-            //         lng: journey.origin.lng
-            //     },
-            //     destination: {
-            //         placeId: journey.destination.placeId,
-            //         fullAddressInString: journey.destination.fullAddressInString,
-            //         lat: journey.destination.lat,
-            //         lng: journey.destination.lng
-            //     },
-            //     pointCode: journey.pointCodes,
-            //     price: journey.price,
-            //     Fullname: props.Info.Fullname,
-            //     Phone: props.Info.Phone
-
-            // });
+        } else if (status === "bookdriver") {          
             
             setStatus("completeTrip")           
         
         }
         else if (status === "completeTrip") {
-            console.log("completeTrip");
+
             setJourney({
                 origin: {
                     placeId: "",

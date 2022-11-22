@@ -1,13 +1,11 @@
 import React from "react";
 
 export default function DriverInfo(props) {
-    
-    if (!(props.info.Phone  && props.info.controlNumber && props.info.type )) {
-        return null;
-    }   
     return (
         <React.Fragment>
-            <div  className=" card-container">
+            {props.info.vehicleInfo.controlNumber &&  
+            
+            (<div  className=" card-container">
                 <div className=" col-md-12">
                     <div className="form-group">
                         <label htmlFor="Driver">Driver:</label>
@@ -32,7 +30,7 @@ export default function DriverInfo(props) {
                         <input
                             type="text"
                             className="form-control"
-                            value={props.info.controlNumber}
+                            value={props.info.vehicleInfo.controlNumber}
                             disabled
                         />
                     </div>
@@ -41,12 +39,14 @@ export default function DriverInfo(props) {
                         <input
                             type="text"
                             className="form-control"
-                            value={props.info.type}
+                            value={props.info.vehicleInfo.type}
                             disabled
                         />
                     </div>         
                 </div>
             </div>
+            )}
+            
         </React.Fragment>
     )
 }

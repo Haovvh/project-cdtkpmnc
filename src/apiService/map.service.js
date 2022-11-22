@@ -1,7 +1,7 @@
 import axios from "axios";
 import {API_KEY} from '../Goong/GoongKEY'
 
-class GoongAPI {
+class Map {
     
     getGeocode (address)  {
         return axios.get(`https://rsapi.goong.io/geocode?address=${address}&api_key=${API_KEY}`)        
@@ -12,4 +12,4 @@ class GoongAPI {
     }    
 
 }
-export default new GoongAPI();
+export default new Map();

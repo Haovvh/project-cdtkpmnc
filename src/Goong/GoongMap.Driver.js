@@ -17,26 +17,45 @@ export default function GoongMapDriver(props) {
     longitude: 106.6657,
     zoom: 14
   });
+  const options = {
+    enableHighAccuracy: true,
+    timeout: 5000,
+    maximumAge: 0
+  };
+  
+  
+
+  function error(err) {
+    console.warn(`ERROR(${err.code}): ${err.message}`);
+  }
   
     
 
   useEffect (()=>{
       var delay = 5000;
-      if (props.Online === "Online") {
+      
+      if (props.Online ) {
           delay = 5000
       } else {
         delay = 100000
       }
       const intervalId = setInterval( () => {
-        if(viewport.latitude >0 && viewport.longitude >0 )
-        driverService.updateLocation(driverId, viewport.latitude, viewport.longitude).then(
-          reponse => {
-            console.log(reponse.status)
-          }, error => {
-            console.log(error)
+        navigator.geolocation.getCurrentPosition(success, error, options);
+        function success(pos) {
+          var crd = pos.coords;
+          console.log(crd.latitude + " " + crd.longitude)
+          console.log(viewport.latitude + "           " + viewport.longitude)
+          if(viewport.latitude >0 && viewport.longitude >0 ) {
+            driverService.updateLocation(driverId, crd.latitude, crd.longitude).then(
+              reponse => {
+                console.log(reponse.status)
+              }, error => {
+                console.log(error)
+              }
+            )
           }
-        )
         
+        } 
       }, delay) 
       return () => clearInterval(intervalId); //This is important   
     

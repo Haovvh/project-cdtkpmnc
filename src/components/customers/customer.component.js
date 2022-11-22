@@ -27,13 +27,6 @@ export default function Customer () {
             phone: response.data.phone  
           })
         }
-        // if(response.data.resp) {
-        //   console.log(response.data);
-        //   setInfoCustomer(response.data.data)
-        // } else {
-        //   console.log(response.status);
-        //   setMessage(response.data.message)
-        // }
       }, error => {
         console.log(error)
         const resMessage =

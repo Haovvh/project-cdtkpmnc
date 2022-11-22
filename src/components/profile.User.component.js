@@ -99,7 +99,6 @@ export default function ProfileUser (props) {
             }
             else {
               console.log("Response False")
-              //setStatusCode(false); 
             }                   
           },
           error => {
@@ -138,7 +137,6 @@ export default function ProfileUser (props) {
             })
       }
     }
-        console.log("Khong duoc rong")
         
     }  
 

@@ -24,10 +24,34 @@ export default function Driver (){
     
   });
 
-  const [Online, setOnline] = useState("");
+  const [Online, setOnline] = useState(false);
   const [status, setStatus] = useState("Offline")
-  const [InfoCustomer, setInfoCustomer] = useState({})
+  const [InfoCustomer, setInfoCustomer] = useState({
+    Fullname: "",
+    phone: ""
+  })
+  const [journey, setJourney] = useState({
+    origin: {
+      lat: 0 ,
+      lng: 0,
+      fullAddressInString: "",
+      placeId: ""
+    },
+    destination: {
+      lat: 0 ,
+      lng: 0,
+      fullAddressInString: "",
+      placeId: ""
+    }, 
+    callId: 0,
+    vehicleType: "CAR4",
+    paymentMethod: "CASH",
+    price: 0,
+    pointCode: ""
+
+  })
   const [journeyId, setJourneyId] = useState(0);
+  const [show, setShow] = useState(false);
 
   socket.on("drivers", (...args) => {
     let listdriver = args[0];
@@ -44,13 +68,18 @@ export default function Driver (){
     
   });
 
-  useEffect(  () => { 
-    console.log(driverId) 
-    
-    userService.getUserbyId(driverId).then(
+  useEffect(  () => {     
+    userService.getDriverbyId(driverId).then(
       response => {
         if(response.data) {
+          console.log(response.data)
+          setOnline(response.data.isOnline);
+          if(response.data.isOnline) {
+            setStatus('Online');
 
+          } else {
+            setStatus('Offline')
+          }
           setDriverInfo(prevState => ({ ...prevState,
             id: response.data.id,
             Fullname: response.data.firstName + " " + response.data.lastName,
@@ -61,10 +90,7 @@ export default function Driver (){
             }
             
           }))
-          //setOnline(response.data.data.Status)
-          //setStatus(response.data.data.Status)
         } else {
-          //setMessage(response.data.message)
         }
       }, error => {
         console.log(error)
@@ -81,91 +107,62 @@ export default function Driver (){
         window.location.assign(URL_WEB)
       }
     )
-    //check xem có journey nào chưa hoàn thành không? gọi API journey
-    
-    // journeyService.getJourneybyDriver(driverId).then(
-    //   response => {
-    //     console.log(response.data) 
-    //     if(response.data) {
-                 
-    //       // setPassengerInfo( prevState => ({
-    //       //       ...prevState,
-    //       //       Passenger_ID: user.Passenger_ID,
-    //       //       Fullname: user.Fullname,
-    //       //       Phone: user.Phone,
-    //       //       origin_Fulladdress: user.origin_Fulladdress,
-    //       //       destination_Fulladdress: user.destination_Fulladdress, 
-    //       //       distance_km: user.distance_km,
-    //       //       Price: user.Price,
-    //       //       pointCode: user.pointCode 
-    //       // }))
-    //       setStatus("Donetrip")
-    //       //setOnline("Online");
-          
-    //     } else {
 
-    //     }
-               
-    //   },
-    //   error => {
-    //     const resMessage =
-    //       (error.response &&
-    //         error.response.data &&
-    //         error.response.data.message) ||
-    //       error.message ||
-    //       error.toString();
-    //     setMessage(resMessage)                
-    //     }
-    // )
+    journeyService.getJourneybyDriver(driverId).then(
+      response => {
+        console.log(response.data)
+        if(response.data) {
+          let temp = response.data;
+          userService.getUserbyId(temp.customerId).then(
+            response => {
+              console.log(response.data)
+              if(response.data){
+                setInfoCustomer(prevState => ({
+                  ...prevState,
+                  Fullname: response.data.firstName + " " + response.data.lastName,
+                  phone: response.data.phone
+                }))
+              }
+            }, error => {
+              console.log(error)
+            }
+          )          
+          setStatus("Donetrip")         
+          
+          setJourneyId(temp.id);
+          setJourney(prevState => ({
+            ...prevState,
+            origin: {
+              placeId: temp.origin.placeId,
+              fullAddressInString: temp.origin.fullAddressInString,
+              lat: temp.origin.lat,
+              lng: temp.origin.lng
+            },
+            destination: {
+              placeId: temp.destination.placeId,
+              fullAddressInString: temp.destination.fullAddressInString,
+              lat: temp.destination.lat,
+              lng: temp.destination.lng
+            },
+            paymentMethod: temp.paymentMethod,
+            price: temp.price,
+            pointCode: temp.pointCode,
+            vehicleType: temp.vehicleType
+          }))
+        }
+      }, error => {
+        console.log(error)
+      }
+    )    
+    
   }, []);
 
-  //{
-  //"journey": 
-  //"drivers": [
-    //1, 2, 3
-  //]
-// ấn ok gọi api /journey/{id}/driver/{driverId} 
-// status ==200 ok
-//status == 400 cancel
-
-  //Socket
-  // socket.on("broadcat",  (data) => {
-  //   console.log("driver");
-  //   console.log(data.drivers)
-  //   let driver = data.drivers;
-// driverID
-//{"journey":{"id":1,"customerId":1,"vehicleType":"CAR4","status":"INITIALIZED","phone":"0123453333",
-//"origin":{"id":2,"placeId":"ChIJKcrnSUYvdTERO64MErYx9VU","lat":10.776782746931858,"lng":106.70316539664148,"placeName":"Nha hat Thanh pho Ho Chi Minh","fullAddressInString":"07 Công Trường Lam Sơn, Bến Nghé, Quận 1, Thành phố Hồ Chí Minh 700000, Việt Nam"},"destination":{"id":1,"placeId":"ChIJYwp0UDwvdTERAcNNBSCupk8","lat":10.77143424859069,"lng":106.69162276880344,"placeName":"Cheese Coffee Le Thi Rieng","fullAddressInString":"41 Lê Thị Riêng, Phường Phạm Ngũ Lão, Quận 1, Thành phố Hồ Chí Minh, Việt Nam"},"price":105,"paymentMethod":"CASH"},"drivers":[1]}
-  //   for(let i =0 ; i< driver.length; i++) {
-  //     console.log(driverInfo.Driver_ID)
-
-  //     if(driverId === driver[i].Driver_ID){
-  //       setRoom(data.room)
-  //       setStatus("isPassenger");
-  //       // setPassengerInfo(prevState =>  ({
-  //       //   ...prevState,
-  //       //   Passenger_ID: data.user.Passenger_ID,
-  //       //   User_ID: data.user.User_ID,
-  //       //   SupportStaff_ID: data.user.SupportStaff_ID,
-  //       //   Fullname: data.user.Fullname,
-  //       //   Phone: data.user.Phone,
-  //       //   origin_Id: data.user.origin.placeId,
-  //       //   origin_Fulladdress: data.user.origin.fulladdress,
-  //       //   destination_Id: data.user.destination.placeId,
-  //       //   destination_Fulladdress: data.user.destination.fulladdress, 
-  //       //   distance_km: data.user.distance_km,
-  //       //   Price: data.user.Price,
-  //       //   pointCode: data.user.pointCode
-  //       // }))
-  //     }
-  //   }
-  // }) 
-
+  
   
   const handleOnline = () => {   
     
     if (status === "Online") {
-      //gọi API đến server
+
       driverService.driverOffline(driverId).then(
         response => {
           console.log(response.status)
@@ -173,7 +170,7 @@ export default function Driver (){
           console.log(error)
         }
       )
-      setOnline("Offline")
+      setOnline(false)
       setStatus("Offline");   
       
 
@@ -186,75 +183,37 @@ export default function Driver (){
         }
       )
       
-      setOnline("Online")
+      setOnline(true)
       setStatus("Online");
 
     } else if(status === "isBookDriver") {
-      //goi api tạo journey
-      console.log(" vao status co khach")
+      
       journeyService.putJourneybyDriver(journeyId, driverId).then(
         response => {
-          console.log(response);
+          console.log(response.status);
+          if(response.status) {
+            setShow(true);
+            setStatus("Donetrip")
+          }
+        }, error => {
+          window.location.reload();
+          console.log(error)
+        }
+      )
+            
+
+    } else if(status === "Donetrip") {
+
+      journeyService.finishJourney(journeyId).then(
+        response => {
+          if(response.status === 200){
+            window.location.reload();
+          }
         }, error => {
           console.log(error)
         }
       )
-      // journeyService.createjourney(InfoCustomer.id, 
-      //   driverId, InfoCustomer.price,
-      //    InfoCustomer.origin.placeId,
-      //   InfoCustomer.origin.fullAddressInString, 
-      //   InfoCustomer.destination.placeId,
-      //   InfoCustomer.destination.fullAddressInString, 
-      //   InfoCustomer.price,
-      //   InfoCustomer.pointCode).then(
-      //     response => {
-      //       if(response.data) {
-      //         console.log(response.data)
-      //         setStatus("Donetrip")
-      //       } else {
-      //         setMessage(response.data.message)
-      //         setStatus("Online")
-      //         setInfoCustomer({})
-      //       }     
-      //     },
-      //     error => {
-      //       const resMessage =
-      //         (error.response &&
-      //           error.response.data &&
-      //           error.response.data.message) ||
-      //         error.message ||
-      //         error.toString();
-      //       setMessage(resMessage)                  
-      //       } 
-      //    )      
-
-    } else if(status === "Donetrip") {
-      //gọi api update journey thành công
-      journeyService.updatejourney(driverId).then(
-        response => {
-          if(response.data.resp) {
-            setMessage(response.data.message)
-            // socket.emit("successjourney", {
-            //   room: room,
-            //   Status: "success"
-            // })
             
-            setStatus("Online")
-            setInfoCustomer({});
-          } else {
-            setMessage(response.data.message)
-          }        
-        },
-        error => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-          setMessage(resMessage)                   
-          } 
-      )      
     }    
   }
 
@@ -289,10 +248,12 @@ export default function Driver (){
             handleOnline()
           }}>
             {(status === "Offline") ? 'Online' : 
-          ((status === "Online") ? 'Offline' : ((status === "isBookDriver") ? 'Accept' : "Done Trip"))}</button>
+          ((status === "Online") ? 'Offline' : 
+          ((status === "isBookDriver") ? 'Accept' : 
+          "Done Trip"))}</button>
             </div>
             <div className="col-6">
-            {(status === "isPassenger") && (
+            {(status === "isBookDriver") && (
             <button   className="btn btn-primary"
             onClick={() => {handleOnClickCancel()}}>
             Cancel
@@ -301,10 +262,10 @@ export default function Driver (){
           </div>
         </div>        
         <div>
-          <CustomerInfo info={InfoCustomer} />
+          <CustomerInfo info={InfoCustomer} journey = {journey}/>
         </div >
         <div className="">
-          {(Online === "Offline") ? <h1>Offline</h1> : 
+          {!Online ? <h1>Offline</h1> : 
           <GongMapDriver Online={Online}/>  
             }
         </div>              
