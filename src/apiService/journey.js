@@ -20,6 +20,11 @@ class Journey {
     });
   } 
   
+  getHistoryJourney (id) {
+    return axios.get(process.env.REACT_APP_API_URL + `/journey/history/${id}`, 
+    { headers: authHeader() });
+  }
+
   getJourneybyId (id) {
     return axios.get(process.env.REACT_APP_API_URL + `/journey/${id}`, 
     { headers: authHeader() });

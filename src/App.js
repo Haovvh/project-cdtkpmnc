@@ -20,6 +20,7 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import History from "./components/history";
 
 
 class App extends Component {
@@ -108,8 +109,17 @@ class App extends Component {
           { currentUser && isSupportStaff  && (
             <Nav className="nav-item"> 
               <li className="nav-item">
-                <Link to={"/supportstaff"} className="nav-link">
+                <Link to={"/staff"} className="nav-link">
                   Support Staff
+                </Link>
+              </li>
+              </Nav>
+            )}
+            { (currentUser )  && (
+            <Nav className="nav-item"> 
+              <li className="nav-item">
+                <Link to={"/history"} className="nav-link">
+                  History
                 </Link>
               </li>
               </Nav>
@@ -189,9 +199,10 @@ class App extends Component {
             <Route path="/register" element={<RegisterUser />} />
             <Route path="/registerdriver" element={<RegisterDriver />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/history" element={<History />} />
             <Route path="/customer" element={<Customer />} />
             <Route path="/driver" element={<Driver/>} />
-            <Route path="/supportstaff" element={<SupportStaff />} />
+            <Route path="/staff" element={<SupportStaff />} />
             <Route path="/callmobile" element={<CallMobile />} />
           </Routes>
         </div>

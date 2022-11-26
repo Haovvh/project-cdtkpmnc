@@ -95,7 +95,7 @@ export default function ProfileUser (props) {
       //Update Driver
       if(InfoCustomer.personalId && InfoCustomer.vehicleInfo.controlNumber && InfoCustomer.vehicleInfo.type) {
         usersService.putUserDriver(Id,InfoCustomer.firstName, InfoCustomer.lastName,InfoCustomer.phone, 
-          InfoCustomer.email, InfoCustomer.personalId,InfoCustomer.vehicleInfo).then(
+          InfoCustomer.email, InfoCustomer.personalId,InfoCustomer.vehicleInfo, InfoCustomer.username, InfoCustomer.password).then(
           response => {
             if(response.data) {
               console.log(response.data) 
