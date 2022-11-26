@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import driverService from "../apiService/driver.service";
-import userService from "../apiService/user.service";
+import driverService from "../../apiService/driver";
+import userService from "../../apiService/customer";
 
 export default function RegisterDriver () {
   

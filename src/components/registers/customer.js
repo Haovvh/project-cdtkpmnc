@@ -3,7 +3,7 @@ import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import { isEmail } from "validator";
-import userService from "../apiService/user.service";
+import userService from "../../apiService/customer";
 
 
 const required = value => {

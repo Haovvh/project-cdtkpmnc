@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import mapService from "../../apiService/map.service";
-import GoongMap from "../../Goong/GoongMap";
-import DriverInfo from "./driverInfo.component";
+import mapService from "../../apiService/map";
+import GoongMap from "../../Goong/Map";
+import DriverInfo from "./driverInfo";
 import { MONEY_CAR4, MONEY_CAR7, WEB_SOCKET } from "../../public/const";
-import callService from "../../apiService/call.service";
-import journeyService from "../../apiService/journey.service";
-import userService from "../../apiService/user.service";
-import customersService from "../../apiService/customers.service";
+import callService from "../../apiService/call";
+import journeyService from "../../apiService/journey";
+
+import customersService from "../../apiService/customer";
 
 import * as io from "socket.io-client";
 
@@ -24,8 +24,7 @@ const required = value => {
 
 export default function BookDriver (props) {   
     const socket = io.connect(WEB_SOCKET); 
-    const id = userService.getCurrentUser().id;
-    const [hiddenStatus, sethiddenStatus] = useState(false);
+    const id = customersService.getCurrentUser().id;
     const [message, setMessage] = useState("");
     const [vehicleType, setvehicleType] = useState('CAR4');
     const [journey, setJourney] = useState({
@@ -49,32 +48,34 @@ export default function BookDriver (props) {
 
     const [status, setStatus] = useState("showtripinfo")
     const [places, setPlaces] = useState([
-        {fullAddressInString: "",
-        id: 0,
-        lat: 0,
-        lng: 0,
-        placeId: "wTVBnNQqnCpmwk45s0mLgGbDc7WvdKqE8bUZJ-7VO-7ZWtlX2sXS2-VWlbwm3d4ezU2FRK4BNSranZXuUtEFC_1PAZQI",
-        placeName: ""
-    }
     ])
-    const [distance_km, setDistance_km] = useState();
-    const [distance, setDistance] = useState("")
     const [disabled, setDisabled] = useState(false);
     const [disabledbutton, setDisabledbutton] = useState(false);
     
     const [driverInfo, setDriverInfo] = useState({
         Fullname: "",
-        Phone: "",
+        phone: "",
         vehicleInfo: {
             controlNumber: "",
             type: "CAR4"
         }
     });
 
+    //SOCKET
     socket.on("customers-noti", (...args) => {
-        let listdriver = args[0];
-        console.log(listdriver)
-        if(listdriver.customerId === id){
+        let listdriver = args[0].driver;
+        if( args[0].customerId === id){
+            
+            setDriverInfo(prevState => ({
+                ...prevState, 
+                Fullname: listdriver.firstName + " " + listdriver.lastName,
+                phone: listdriver.phone,
+                vehicleInfo: {
+                    controlNumber: listdriver.vehicleInfo.controlNumber,
+                    type: listdriver.vehicleInfo.type
+                }
+            }))
+
             setStatus("completeTrip");
             setDisabledbutton(true);
         }
@@ -85,47 +86,62 @@ export default function BookDriver (props) {
       socket.on("finish-journey", (...args) => {
         let listdriver = args[0];
         console.log(listdriver)
-        alert("Done Trip");
-        window.location.reload();
+        if(listdriver.customerId === id){
+            alert("Done Trip");
+            window.location.reload();
+        }
+        
         // ...
         
       });
 
-    useEffect( () => {        
-        
-        //check xem có chuyến đi nào chưa hoàn thành không?
-        customersService.getFiveMostPlaces(props.InfoCustomer.phone).then(
+    useEffect( () => {     
+        customersService.getUserbyId(id).then(
             response => {
-                console.log(response)
-                if(response.length > 0 ){
-                    
-                    setPlaces(response.data)
-                }
-            }, error => {
-                console.log(error)
-            }
-        )
-        customersService.getFiveRecentCall(props.InfoCustomer.phone).then(
-            response => {
-                if(response.data.length > 0) {
-                    
+                if(response.data.phone){
+                    const _phone = response.data.phone;
+                    customersService.getFiveMostPlaces(_phone).then(
+                        response => {
+                            
+                            if(response.data.length > 0 ){
+                                console.log(response.data)
+                                setPlaces(response.data)
+                                console.log(places)
+                            }
+                        }, error => {
+                            console.log(error)
+                        }
+                    )
+                    customersService.getFiveRecentCall(_phone).then(
+                        
+                        response => {
+                            console.log(response.data)
+                            if(response.data.length > 0) {
+                                
+                            }
+                            
+                        }, error => {
+                            console.log(error)
+                        }
+                    )
                 }
                 console.log(response.data)
-            }, error => {
-                console.log(error)
             }
         )
+        
+        //check xem có chuyến đi nào chưa hoàn thành không?
+        
 
         journeyService.getJourneybyCustomer(id).then(
           response => {
             if(response.data) {
                 if(response.data.driverId) {
-                    userService.getDriverbyId(response.data.driverId).then(
+                    customersService.getDriverbyId(response.data.driverId).then(
                         response => {
                             if(response.data) {
                                 setDriverInfo({
                                     Fullname: response.data.firstName + " " + response.data.lastName,
-                                    Phone: response.data.phone,
+                                    phone: response.data.phone,
                                     vehicleInfo: {
                                         controlNumber: response.data.vehicleInfo.controlNumber,
                                         type: response.data.vehicleInfo.type
@@ -168,6 +184,7 @@ export default function BookDriver (props) {
             setMessage(resMessage)                 
             }
         )
+
     },[])
 
     //lấy giá trị trong textbox 
@@ -196,11 +213,11 @@ export default function BookDriver (props) {
 
                     const origins = await mapService.getGeocode(journey.origin.fullAddressInString);
 
-                    const jsonorigins = await origins.data.results[0].geometry.location.lat + ',' + origins.data.results[0].geometry.location.lng
+                    const ORIGIN_LAT_LNG = await origins.data.results[0].geometry.location.lat + ',' + origins.data.results[0].geometry.location.lng
     
                     const destinations = await mapService.getGeocode(journey.destination.fullAddressInString);
 
-                    const jsondestinations = await destinations.data.results[0].geometry.location.lat + ',' + destinations.data.results[0].geometry.location.lng
+                    const DESTINATION_LAT_LNG = await destinations.data.results[0].geometry.location.lat + ',' + destinations.data.results[0].geometry.location.lng
                     setJourney(prevState => ({
                         ...prevState,
                         origin: {
@@ -216,8 +233,8 @@ export default function BookDriver (props) {
                             lat: destinations.data.results[0].geometry.location.lat
                         }
                     }))
-                    if (jsonorigins && jsondestinations) {
-                        const distance = await mapService.getDirection(jsonorigins,jsondestinations);                        
+                    if (ORIGIN_LAT_LNG && DESTINATION_LAT_LNG) {
+                        const distance = await mapService.getDirection(ORIGIN_LAT_LNG,DESTINATION_LAT_LNG);                        
                         const json = await distance.data.routes[0]    
                         
                         setJourney(prevState => ({
@@ -228,7 +245,7 @@ export default function BookDriver (props) {
                         setJourney(prevState => ({
                             ...prevState,price: Math.round((json.legs[0].distance.value)*MONEY_CAR4/1000)
                         }))
-                        setDistance_km(parseInt(json.legs[0].distance.value)/1000)
+
                         setStatus("bookdriver")
                         setDisabled(true)
                     }
@@ -247,7 +264,6 @@ export default function BookDriver (props) {
             callService.call(id, props.InfoCustomer.phone,'WEB_APP', vehicleType ,journey.origin,journey.destination).then(
                 response => {
                     if(response.data.id) {
-                        let callId = response.data.id;
                         console.log("callId: " +  response.data.id)
                          journeyService.createjourney(response.data.id , id, vehicleType, props.InfoCustomer.phone, journey.origin,journey.destination,
                             journey.price,journey.paymentMethod,journey.pointCode).then(
@@ -263,7 +279,6 @@ export default function BookDriver (props) {
                                                 if(response.status === 200) {
                                                     console.log("success ");
                                                     setStatus("awaitdriver") 
-                                                    sethiddenStatus(true);
                                                 }
                                             }, error => {
                                                 console.log(error)
@@ -324,10 +339,10 @@ export default function BookDriver (props) {
             <div className="container">
                 <div className="card">
                     <div>
-                        {journey.price >0 && <h4>Price: {journey.price} VND</h4>}                        
+                        {journey.price >0 && <h4>Price {journey.price} VND</h4>}                        
                     </div>
                     <div className="form-group">
-                        <label htmlFor="username">Origin:</label>
+                        <label htmlFor="username">Origin</label>
                         <input
                             list="placeFrom" name="browser"
                             placeholder="Origin"
@@ -339,12 +354,12 @@ export default function BookDriver (props) {
                             disabled={disabled}
                         />
                         <datalist id="placeFrom">
-                            {places.map((item, key) => 
+                            {places.length > 0 && places.map((item, key) => 
                             <option key = {key} value={item.fullAddressInString}/>)} 
                         </datalist>
                     </div>
                     <div className="form-group">
-                        <label htmlFor="username">Destination:</label>
+                        <label htmlFor="username">Destination</label>
                         <input
                             list="placeTo"
                             placeholder="Destination"
@@ -356,14 +371,14 @@ export default function BookDriver (props) {
                             validations={[required]}
                         />
                         <datalist id="placeTo">
-                            {places.map((item, key) => 
+                            {places.length >0 && places.map((item, key) => 
                             <option key = {key} value={item.fullAddressInString}/>)} 
                         </datalist>
                     </div>
                     <div className="row">
-                        <div className="col-5">
+                        <div className="col-sm-5 col-lg-6 col-sm-6">
                             <div className="form-group">
-                                <label htmlFor="username">Car Type:</label>
+                                <label htmlFor="username">Car Type</label>
                                     <select value={vehicleType} onChange = {(event) =>{handleChange(event)}}>
                                         <option value="CAR4">Car 4 seat</option>
                                         <option value="CAR7">Car 7 seat</option>
@@ -371,9 +386,9 @@ export default function BookDriver (props) {
                                     </select>
                             </div>
                         </div>
-                        <div className="col-5">
+                        <div className="col-sm-5 col-lg-6 col-sm-6">
                             <div className="form-group">
-                                <label htmlFor="Pay method">Pay method:</label>
+                                <label htmlFor="Pay method">Pay Method</label>
                                     <select value={journey.paymentMethod} onChange = {(event) =>{onChangePaymethod(event)}}>
                                         <option value="CASH">CASH</option>
                                         <option value="CARD">CARD</option>

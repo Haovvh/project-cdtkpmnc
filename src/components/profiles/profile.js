@@ -1,6 +1,6 @@
 import React from "react";
-import ProfileUser from "./profile.User.component";
-import userService from "../apiService/user.service";
+import ProfileUser from "./profile.User";
+import userService from "../../apiService/customer";
 
 
 

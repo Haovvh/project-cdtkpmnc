@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import ReactMapGL, { GeolocateControl} from '@goongmaps/goong-map-react';
-import { MAP_KEY } from './GoongKEY';
-import driverService from '../apiService/driver.service';
-import userService from '../apiService/user.service';
+import { MAP_KEY } from '../public/const';
+import driverService from '../apiService/driver';
+import userService from '../apiService/customer';
 
 
 export default function GoongMapDriver(props) {
@@ -13,9 +13,10 @@ export default function GoongMapDriver(props) {
   };
 
   const [viewport, setViewport] = useState({
-    latitude: 10.739,
-    longitude: 106.6657,
+    latitude: 10.789141001039244,
+    longitude: 106.70855100000007,
     zoom: 14
+    //10.789141001039244     LNG: 106.70855100000007
   });
   const options = {
     enableHighAccuracy: true,
@@ -25,10 +26,6 @@ export default function GoongMapDriver(props) {
   
   
 
-  function error(err) {
-    console.warn(`ERROR(${err.code}): ${err.message}`);
-  }
-  
     
 
   useEffect (()=>{
@@ -40,26 +37,21 @@ export default function GoongMapDriver(props) {
         delay = 100000
       }
       const intervalId = setInterval( () => {
-        navigator.geolocation.getCurrentPosition(success, error, options);
-        function success(pos) {
-          var crd = pos.coords;
-          console.log(crd.latitude + " " + crd.longitude)
-          console.log(viewport.latitude + "           " + viewport.longitude)
-          if(viewport.latitude >0 && viewport.longitude >0 ) {
-            driverService.updateLocation(driverId, crd.latitude, crd.longitude).then(
-              reponse => {
-                console.log(reponse.status)
-              }, error => {
-                console.log(error)
-              }
-            )
-          }
+        console.log("LAT: " + viewport.latitude + "     LNG: " + viewport.longitude)
+        if(viewport.latitude >0 && viewport.longitude >0 ) {
+          driverService.updateLocation(driverId, viewport.latitude, viewport.longitude).then(
+            reponse => {
+              console.log(reponse.status)
+            }, error => {
+              console.log(error)
+            }
+          )
+        }
         
-        } 
       }, delay) 
       return () => clearInterval(intervalId); //This is important   
     
-    },[]
+    },[viewport.latitude, viewport.longitude]
   )
 
   

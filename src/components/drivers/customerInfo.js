@@ -5,11 +5,11 @@ export default function CustomerInfo(props) {
     
     return (
         <React.Fragment>
-            {props.info.Fullname && props.journey.origin.fullAddressInString && 
+            {props.info.Fullname && props.journey.origin.fullAddressInString && props.show &&
             <div className=" card-container">
             <div className=" col-md-12">
                 <div className="form-group">
-                    <label htmlFor="username">Customer:</label>
+                    <label htmlFor="username">Customer</label>
                     <input
                         type="text"
                         className="form-control"

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import ReactMapGL, { GeolocateControl } from '@goongmaps/goong-map-react';
-import { MAP_KEY } from './GoongKEY';
+import { MAP_KEY } from '../public/const';
 
 
 const geolocateControlStyle = {

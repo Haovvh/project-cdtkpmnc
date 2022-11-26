@@ -2,17 +2,24 @@ import React, { Component } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import Login from "./components/login.component";
-import RegisterUser from "./components/register.user";
-import RegisterDriver from "./components/register.driver";
-import Home from "./components/home.component";
-import Profile from "./components/profile.component";
-import Driver from "./components/drivers/driver.component";
-import SupportStaff from "./components/supportstaff/supportstaff.component";
+import Login from "./components/login";
+import RegisterUser from "./components/registers/customer";
+import RegisterDriver from "./components/registers/driver";
+import Home from "./components/home";
+import Profile from "./components/profiles/profile";
+
+import Driver from "./components/drivers/driver";
+import SupportStaff from "./components/staff/staff";
 import EventBus from "./common/EventBus";
-import Customer from "./components/customers/customer.component";
-import userService from "./apiService/user.service";
-import CallMobile from "./components/CallMobile/CallMobile.component"
+import Customer from "./components/customers/customer";
+import userService from "./apiService/customer";
+import CallMobile from "./components/CallMobile/CallMobile"
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 
 
 class App extends Component {
@@ -35,7 +42,7 @@ class App extends Component {
       this.setState({        
         isDriver: user.role.includes('DRIVER'),
         isCustomer: user.role.includes('CUSTOMER'),
-        isSupportStaff: user.role.includes('SUPPORTSTAFF'),
+        isSupportStaff: user.role.includes('STAFF'),
         currentUser: user,      
       });
     }
@@ -57,75 +64,102 @@ class App extends Component {
       isSupportStaff: false,
       currentUser: undefined,
     });
-  }
-  
+  } 
 
   render() {
     const { currentUser, isDriver, isCustomer, isSupportStaff } = this.state;
     
     return (
-      <div>
-        <nav className="navbar navbar-expand navbar-dark bg-dark">
-          
-          <Link to={"/"} className="navbar-brand">
-            GoCarVietNam
+      <React.Fragment>
+        
+        <Navbar bg="light" expand="lg" >
+        <Container >
+          <Navbar.Brand to={"/"} className="navbar-brand">GoCarVietNam</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">       
+          <div className="navbar-nav mr-auto col-lg-3">
+            <Nav className="me-auto">
+            <Link to={"/"} className="navbar-brand">
+            Home
           </Link>
-          <div className="navbar-nav mr-auto">
-            
-            { currentUser && isDriver  && (
-              <li className="nav-item">
-                <Link to={"/driver"} className="nav-link">
-                  Driver
-                </Link>
-              </li>
-            )}
-
-            { currentUser && isSupportStaff  && (
-              <li className="nav-item">
-                <Link to={"/supportstaff"} className="nav-link">
-                  Support Staff
-                </Link>
-              </li>
-            )}
-
-            { currentUser && isSupportStaff  && (
-              <li className="nav-item">
-                <Link to={"/callmobile"} className="nav-link">
-                  Create User
-                </Link>
-              </li>
-            )}
-            {currentUser && isCustomer && (
-              <li className="nav-item">
-              <Link to={"/registerdriver"} className="nav-link">
-                Register Driver
-              </Link>
-            </li>
-            )}            
-
+            </Nav>
             { currentUser && isCustomer && (
+              <Nav className="nav-item"> 
               <li className="nav-item">
                 <Link to={"/customer"} className="nav-link">
                   Customer
                 </Link>
               </li>
-              
+              </Nav>
             )}
-
-          </div>
-
-          {currentUser ? (
-            <div className="navbar-nav ml-auto">
+          
+          
+          { currentUser && isDriver  && (
+            <Nav className="nav-item"> 
               <li className="nav-item">
-                <Link to={"/profile"} className="nav-link">
-                  Profile 
+                <Link to={"/driver"} className="nav-link">
+                  Driver
                 </Link>
               </li>
+              </Nav>
+            )}
+          
+          
+          { currentUser && isSupportStaff  && (
+            <Nav className="nav-item"> 
               <li className="nav-item">
-                <a href="/login" className="nav-link" onClick={this.logOut}>
-                  LogOut
-                </a>
+                <Link to={"/supportstaff"} className="nav-link">
+                  Support Staff
+                </Link>
               </li>
+              </Nav>
+            )}
+          
+          
+          { currentUser && isSupportStaff  && (
+            <Nav className="nav-item  ">
+              <li className="nav-item">
+                <Link to={"/callmobile"} className="nav-link">
+                  Create User
+                </Link>
+              </li>
+              </Nav>
+            )}
+             
+          
+          {currentUser && isCustomer && (
+            <Nav className="nav-item">
+              <li className="nav-item" variant="outline-primary">
+              <Link to={"/registerdriver"} className="nav-link outline-primary">
+                RegisterDriver
+              </Link>
+            </li>
+            </Nav>
+            )}
+             
+            </div>
+          <Nav>
+          {currentUser ? (
+            
+            <div className="navbar-nav ml-auto">
+             
+             <Form className="d-flex">
+            <Form.Control
+              type="search"
+              placeholder="Search"
+              className="me-2"
+              aria-label="Search"
+            />
+            <Button variant="outline-primary">Search</Button>
+          </Form>
+          <NavDropdown  title="Setting" id="collasible-nav-dropdown">
+              <NavDropdown.Item href={"/profile"} className="nav-link">Profile</NavDropdown.Item>
+              <NavDropdown.Item href="/login" className="nav-link" onClick={this.logOut}>
+                LogOut
+              </NavDropdown.Item>
+              
+            </NavDropdown>
+              
             </div>
           ) : (
             <div className="navbar-nav ml-auto">
@@ -139,11 +173,14 @@ class App extends Component {
                 <Link to={"/register"} className="nav-link">
                   Register
                 </Link>
-              </li>
-              
+              </li>              
             </div>
           )}
-        </nav>
+          
+          </Nav>
+          </Navbar.Collapse> 
+        </Container>
+      </Navbar>       
 
         <div className="container mt-3">
           <Routes>
@@ -159,7 +196,7 @@ class App extends Component {
           </Routes>
         </div>
 
-      </div>
+      </React.Fragment>
     );
   }
 }

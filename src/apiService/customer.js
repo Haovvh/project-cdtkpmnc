@@ -2,7 +2,7 @@ import axios from 'axios';
 import authHeader from './auth-header';
 
 
-class User {
+class Customer {
 
   loginUser(username, password) {
     return axios
@@ -20,8 +20,8 @@ class User {
       });
   }
   
-  getUserbyPhone(Phone) {
-    return axios.get(process.env.REACT_APP_API_URL + `/user/${Phone}`, 
+  getUserbyPhone(phone) {
+    return axios.get(process.env.REACT_APP_API_URL + `/user?phone=${phone}`, 
     { headers: authHeader() });
   }
 
@@ -64,9 +64,18 @@ class User {
     return JSON.parse(localStorage.getItem('user'));;
   }
  
-  
+  getFiveMostPlaces(phone) {
+
+    return axios.get(process.env.REACT_APP_API_URL + `/customer/${phone}/mostPlaces`, 
+    { headers: authHeader() });
+  }
+  getFiveRecentCall(phone) {
+
+    return axios.get(process.env.REACT_APP_API_URL + `/customer/${phone}/recentCalls`, 
+    { headers: authHeader() });
+  }  
   
   
 }
 
-export default new User();
+export default new Customer();

@@ -8,7 +8,7 @@ export default function DriverInfo(props) {
             (<div  className=" card-container">
                 <div className=" col-md-12">
                     <div className="form-group">
-                        <label htmlFor="Driver">Driver:</label>
+                        <label htmlFor="Driver">Driver</label>
                         <input
                             type="text"
                             className="form-control"
@@ -17,16 +17,16 @@ export default function DriverInfo(props) {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="Phone">Phone:</label>
+                        <label htmlFor="Phone">Phone</label>
                         <input
                             type="phone"
                             className="form-control"
-                            value={props.info.Phone}
+                            value={props.info.phone}
                             disabled
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="Control Number">Control Number:</label>
+                        <label htmlFor="Control Number">Control Number</label>
                         <input
                             type="text"
                             className="form-control"
@@ -35,7 +35,7 @@ export default function DriverInfo(props) {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="">Car Type:</label>
+                        <label htmlFor="">Car Type</label>
                         <input
                             type="text"
                             className="form-control"

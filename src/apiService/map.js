@@ -1,5 +1,5 @@
 import axios from "axios";
-import {API_KEY} from '../Goong/GoongKEY'
+import {API_KEY} from '../public/const'
 
 class Map {
     

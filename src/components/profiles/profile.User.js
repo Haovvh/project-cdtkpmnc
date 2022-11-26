@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import usersService from "../apiService/user.service";
+import usersService from "../../apiService/customer";
 
 
 const required = value => {

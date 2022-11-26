@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import userService from "../../apiService/user.service";
-import BookDriver from "./bookdriver.component";
+import userService from "../../apiService/customer";
+import BookDriver from "./bookdriver";
 import { URL_WEB } from "../../public/const";
 
 export default function Customer () {

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import StaffJourney from "./staffJourney.component";
-import UserInfo from "./user-info.component";
-import userService from "../../apiService/user.service";
+import StaffJourney from "./staffJourney";
+import UserInfo from "./userInfo";
+import userService from "../../apiService/customer";
 import { URL_WEB } from "../../public/const";
-
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 const required = value => {
   if (!value) {
@@ -20,15 +22,14 @@ export default function SupportStaff () {
   const [message, setMessage] = useState("");
   const [hidden, setHidden] = useState(false)
   const [show, setShow] = useState(true)
-  const [SupportStaff, setSupportStaff] = useState({
-    SupportStaff_ID: "",
+  const [Staff, setStaff] = useState({
     Fullname: "", 
-    Phone: "",
+    phone: "",
     role: ""
   })
 
   const [Info, setInfo] = useState({
-    Phone: "",
+    phone: "",
     User_ID: "",
     Fullname: ""
   });
@@ -39,17 +40,16 @@ export default function SupportStaff () {
   useEffect( () =>{
     userService.getUserbyId(id).then(
       response => {
-        console.log(response.data.data)
-        if(response.data.resp) {
-          setSupportStaff(prevState => ({
+        console.log(response.data)
+        if(response.data) {
+          setStaff(prevState => ({
             ...prevState,
-            SupportStaff_ID: response.data.id,
-            Fullname: response.data.Fullname, 
-            Phone: response.data.Phone,
-            role: response.data.role
+            Fullname: response.data.firstName + ' ' + response.data.lastName, 
+            phone: response.data.phone, 
+            role: response.data.userType
           }))
         } else {
-          setMessage(response.data.message)
+          setMessage(response.data.message) 
         }
       }, error => {
         const resMessage =
@@ -68,6 +68,29 @@ export default function SupportStaff () {
   },[])
 
   const handleClick = () => {
+    userService.getFiveMostPlaces(Info.phone).then(
+      response => {
+          
+          if(response.data.length > 0 ){
+              console.log(response.data)
+              setHidden(true)
+          }
+      }, error => {
+          console.log(error)
+      }
+  )
+  userService.getFiveRecentCall(Info.phone).then(
+      
+      response => {
+          console.log(response.data)
+          if(response.data.length > 0) {
+            setHidden(true)
+          }
+          
+      }, error => {
+          console.log(error)
+      }
+  )
     /*
     userByPhoneService.getUserbyPhone(Info.Phone).then(
       response => {
@@ -79,7 +102,7 @@ export default function SupportStaff () {
             Fullname: response.data.data.Fullname,
             User_ID: response.data.data.User_ID
           }))
-          setHidden(true)
+          
           setPlaces(response.data.address)
           setCountPlace(response.data.count)
         }
@@ -104,11 +127,11 @@ export default function SupportStaff () {
   const handlePhone =  (event) => {
     setInfo(prevState => ({
       ...prevState,
-      Phone: event.target.value
+      phone: event.target.value
     }))
   }
   
-    if(!SupportStaff.role.includes('ROLE_SUPPORTSTAFF')) {
+    if(!Staff.role.includes('STAFF')) {
       
       return null;
     }
@@ -117,8 +140,8 @@ export default function SupportStaff () {
       <React.Fragment>
         <div className="container">
         <header className="jumbotron">
-          <h3>SupportStaff: {SupportStaff.Fullname} </h3>       
-          <h3>Phone: {SupportStaff.Phone} </h3>     
+          <h3>Staff: {Staff.Fullname} </h3>       
+          <h3>Phone: {Staff.phone} </h3>     
           
         </header>
         </div>
@@ -130,22 +153,16 @@ export default function SupportStaff () {
               </div>
             )}
 
-        <StaffJourney place = {places} Info= {Info} show = {hidden}/> 
-
-        <div className="card-container">
-          <div className="col-md-12">
-            <div className="form-group">
-              <label htmlFor="phonecustomer">Phone User: </label>
-              <input
-                value={Info.Phone}
+        
+        <InputGroup className="mb-3">
+        <input
+                value={Info.phone}
                 placeholder="Phone Customer"
                 type="phone"
                 className="form-control"
                 onChange={(event) => { handlePhone(event) }}
               />
-            </div>
-            
-            <div className="row">
+        <div className="row">
               <div className="form-group col-5">
                 <button className="btn btn-primary" onClick={() => {handleClick()}}>
                   Search</button>
@@ -155,11 +172,12 @@ export default function SupportStaff () {
                   {!show ? "Show" :"Hidden"}
                 </button>
               </div>) : null}              
-            </div>          
-            
-          </div>
+            </div> 
+      </InputGroup>
+        <div className="card-container">          
           <UserInfo show = {show}  places = {places} countPlace = {countPlace} Fullname={Info.Fullname}/>          
         </div>
+        <StaffJourney place = {places} Info= {Info} show = {hidden}/> 
       </React.Fragment>      
     );
 }

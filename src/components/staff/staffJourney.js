@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import mapService from "../../apiService/map.service";
-import DriverJourney from "../customers/driverInfo.component";
+import mapService from "../../apiService/map";
+import DriverJourney from "../customers/driverInfo";
 import { MONEY_CAR4,MONEY_CAR7 } from "../../public/const";
-import userService from "../../apiService/user.service";
+import customersService from "../../apiService/customer";
 import { WEB_SOCKET } from "../../public/const";
 import * as io from "socket.io-client";
-
+import callService from "../../apiService/call";
+import journeyService from "../../apiService/journey";
 
 const required = value => {
     if (!value) {
@@ -19,10 +20,12 @@ const required = value => {
 
 
 export default function StaffJourney (props) {
-    const id = userService.getCurrentUser().id;
+    const id = customersService.getCurrentUser().id;
     const socket = io.connect(WEB_SOCKET);
     const [type, setType] = useState();
     const [message, setMessage] = useState("");
+    const [vehicleType, setvehicleType] = useState('CAR4');
+    const [disabledbutton, setDisabledbutton] = useState(false);
     const [journey, setJourney] = useState({
         origin: {
             placeId: "",
@@ -59,12 +62,39 @@ export default function StaffJourney (props) {
             type: "CAR4"
         }
     });
-    useEffect( ()=> {
-        // socket.emit("join_room", {
-        //     room: room
-        // });
 
-        userService.getUserbyId(id).then(
+    //SOCKET
+    socket.on("customers-noti", (...args) => {
+        let listdriver = args[0].driver;
+        if(args[0].customerId === id){
+
+            setDriverInfo(prevState => ({
+                ...prevState, 
+                Fullname: listdriver.firstName + " " + listdriver.lastName,
+                phone: listdriver.phone,
+                vehicleInfo: {
+                    controlNumber: listdriver.vehicleInfo.controlNumber,
+                    type: listdriver.vehicleInfo.type
+                }
+            }))
+            setStatus("completeTrip");
+        }
+      });
+
+      socket.on("finish-journey", (...args) => {
+        let listdriver = args[0];
+        console.log(listdriver)
+        if(listdriver.customerId === id){
+            alert("Done Trip");
+            window.location.reload();
+        }
+        
+      });
+
+
+    useEffect( ()=> {
+
+        customersService.getUserbyId(id).then(
             response => {
                 if(response.data.resp) {
                     setInfo(prevState => ({
@@ -84,7 +114,7 @@ export default function StaffJourney (props) {
 
     },[])
 
-    const handlePlaceFrom = (event) => {   
+    const onChangeOrigin = (event) => {   
 
         setJourney(prevState => ({
             ...prevState,origin: {
@@ -92,7 +122,7 @@ export default function StaffJourney (props) {
             } 
         }))
     }
-    const handlePlaceTo = (event) => {
+    const onChangeDestination = (event) => {
 
         setJourney(prevState => ({
             ...prevState,
@@ -110,11 +140,11 @@ export default function StaffJourney (props) {
 
                     const origins = await mapService.getGeocode(journey.origin.fullAddressInString);
 
-                    const jsonorigins = await origins.data.results[0].geometry.location.lat + ',' + origins.data.results[0].geometry.location.lng
+                    const ORIGIN_LAT_LNG = await origins.data.results[0].geometry.location.lat + ',' + origins.data.results[0].geometry.location.lng
     
                     const destinations = await mapService.getGeocode(journey.destination.fullAddressInString);
 
-                    const jsondestinations = await destinations.data.results[0].geometry.location.lat + ',' + destinations.data.results[0].geometry.location.lng
+                    const DESTINATION_LAT_LNG = await destinations.data.results[0].geometry.location.lat + ',' + destinations.data.results[0].geometry.location.lng
                     setJourney(prevState => ({
                         ...prevState,
                         origin: {
@@ -129,8 +159,8 @@ export default function StaffJourney (props) {
                             lng: destinations.data.results[0].geometry.location.lng
                         }
                     }))
-                    if (jsonorigins && jsondestinations) {
-                        const distance = await mapService.getDirection(jsonorigins,jsondestinations);                        
+                    if (ORIGIN_LAT_LNG && DESTINATION_LAT_LNG) {
+                        const distance = await mapService.getDirection(ORIGIN_LAT_LNG,DESTINATION_LAT_LNG);                        
                         const json = await distance.data.routes[0]   
                         setJourney(prevState => ({
                             ...prevState,
@@ -153,6 +183,47 @@ export default function StaffJourney (props) {
             
         } else if (status === "bookdriver") {          
             
+            callService.call(id, props.Info.phone,'MOBILE_CALL', vehicleType ,journey.origin,journey.destination).then(
+                response => {
+                    if(response.data.id) {
+                        console.log("callId: " +  response.data.id)
+                         journeyService.createjourney(response.data.id , id, vehicleType, props.Info.phone, journey.origin,journey.destination,
+                            journey.price,journey.paymentMethod,journey.pointCode).then(
+                                responses => {
+
+                                    if(responses.data.id){
+                                        console.log("journeyId: " + responses.data.id)
+                                        
+                                        journeyService.postJourneybyId(responses.data.id).then(
+                                            responsess=> {
+
+                                                console.log(responsess.status)
+                                                if(response.status === 200) {
+                                                    console.log("success ");
+                                                    setStatus("awaitdriver") 
+                                                }
+                                            }, error => {
+                                                console.log(error)
+                                            }
+                                        ).catch(error => {
+                                            console.log(error)
+                                        })
+                                    }
+                                }, error => {
+                                    console.log(error)
+                                }
+                            ).catch(error => {
+                                console.log(error)
+                            })
+                    }
+                    
+                }, error => {
+                    console.log(error)
+                }
+            ).catch(error => {
+                console.log(error)
+            })
+
             setStatus("completeTrip")           
         
         }
@@ -207,7 +278,7 @@ export default function StaffJourney (props) {
                                 type="text"
                                 className="form-control"
                                 value={journey.origin.fullAddressInString}
-                                onChange={(event) => { handlePlaceFrom(event) }}
+                                onChange={(event) => { onChangeOrigin(event) }}
                                 disabled={disabled}
                             />
                             <datalist id="placeFrom">
@@ -223,7 +294,7 @@ export default function StaffJourney (props) {
                                 type="text"
                                 className="form-control"
                                 value={journey.destination.fullAddressInString}
-                                onChange={(event) => { handlePlaceTo(event) }}
+                                onChange={(event) => { onChangeDestination(event) }}
                                 disabled={disabled}
                             />
                             <datalist id="placeTo">
@@ -246,7 +317,7 @@ export default function StaffJourney (props) {
                             </div>
                             <div className="col-6">
                             <div className="form-group">
-                                <label htmlFor="Pay method">Pay method:</label>
+                                <label htmlFor="Pay method">Pay method</label>
                                     <select value={journey.paymentMethod} onChange = {(event) =>{onChangePaymethod(event)}}>
                                         <option value="CASH">CASH</option>
                                         <option value="CARD">CARD</option>

@@ -7,8 +7,7 @@ export default function Home () {
       <div className="container ">
         <div className="col">
           <header className="jumbotron">
-            <h3>Home</h3>
-            <h2>Xin chào </h2>
+            <h2>Home</h2>
           </header>
           </div>
         <div className="col">          

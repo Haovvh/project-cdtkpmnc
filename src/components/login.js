@@ -3,7 +3,7 @@ import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 
-import userService from "../apiService/user.service";
+import userService from "../apiService/customer";
 
 import { withRouter } from '../common/with-router';
 
