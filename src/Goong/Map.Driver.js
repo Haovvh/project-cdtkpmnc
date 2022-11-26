@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import ReactMapGL, { GeolocateControl} from '@goongmaps/goong-map-react';
-import { MAP_KEY } from '../public/const';
+import { KEY_MAP } from '../public/const';
 import driverService from '../apiService/driver';
 import userService from '../apiService/customer';
 
@@ -63,7 +63,7 @@ export default function GoongMapDriver(props) {
       width="60vw"
       height="60vh"
       mapStyle='https://tiles.goong.io/assets/goong_map_web.json'
-      goongApiAccessToken={MAP_KEY}
+      goongApiAccessToken={KEY_MAP}
       onViewportChange={setViewport}
     >
       <GeolocateControl

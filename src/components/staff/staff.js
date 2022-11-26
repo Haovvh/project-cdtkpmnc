@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import StaffJourney from "./staffJourney";
 import UserInfo from "./userInfo";
 import userService from "../../apiService/customer";
-import { URL_WEB } from "../../public/const";
+import { WEB_LOGIN } from "../../public/const";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
@@ -61,7 +61,7 @@ export default function SupportStaff () {
           setMessage(resMessage)
           userService.logoutUser();
           alert("Token is Expires. Please Login");
-          window.location.assign(URL_WEB)
+          window.location.assign(WEB_LOGIN)
       }
     )
     

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import userService from "../../apiService/customer";
 import BookDriver from "./bookdriver";
-import { URL_WEB } from "../../public/const";
+import { WEB_LOGIN } from "../../public/const";
 
 export default function Customer () {
 
@@ -38,7 +38,7 @@ export default function Customer () {
         setMessage(resMessage)
         userService.logoutUser();
         alert("Token is Exprise. Please Login");
-        window.location.assign(URL_WEB)
+        window.location.assign(WEB_LOGIN)
       }
     )
   },[])

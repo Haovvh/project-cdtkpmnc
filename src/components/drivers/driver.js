@@ -5,7 +5,7 @@ import driverService from "../../apiService/driver";
 import journeyService from "../../apiService/journey";
 import CustomerInfo from "./customerInfo";
 import * as io from "socket.io-client";
-import { WEB_SOCKET, URL_WEB } from "../../public/const";
+import { WEB_SOCKET, WEB_LOGIN } from "../../public/const";
 
 
 export default function Driver (){  
@@ -139,7 +139,7 @@ export default function Driver (){
         setMessage(resMessage)
         userService.logoutUser();
         alert("Token is Exprise. Please Login");
-        window.location.assign(URL_WEB)
+        window.location.assign(WEB_LOGIN)
       }
     )
 

@@ -21,6 +21,8 @@ export default function ProfileUser (props) {
     id: "",
     phone: "",
     email: "",
+    username: "",
+    password: "",
     personalId: "",
     userType: "",
     vehicleInfo: {
@@ -42,6 +44,7 @@ export default function ProfileUser (props) {
               firstName: response.data.firstName,
               lastName: response.data.lastName,
               phone: response.data.phone,
+              username: response.data.username,
               email: response.data.email,
               userType: response.data.userType,            
               personalId: response.data.personalId,
@@ -55,6 +58,7 @@ export default function ProfileUser (props) {
               ...prevState,
               firstName: response.data.firstName,
               lastName: response.data.lastName,
+              username: response.data.username,
               phone: response.data.phone,
               email: response.data.email,
               userType: response.data.userType,            
@@ -114,7 +118,7 @@ export default function ProfileUser (props) {
             //update Customer
       } else {
         usersService.putUserCustomer(Id,InfoCustomer.firstName, InfoCustomer.lastName,InfoCustomer.phone, 
-          InfoCustomer.email).then(
+          InfoCustomer.email, InfoCustomer.username, InfoCustomer.password).then(
           response => {
             if(response.data) {
               console.log(response.data) 
@@ -181,7 +185,7 @@ export default function ProfileUser (props) {
             )}            
         <div className="card">
           <div className="form-group"> 
-              <label htmlFor="username">First Name:</label>
+              <label htmlFor="username">FirstName</label>
                     <input
                             type="text"
                             className="form-control"
@@ -191,7 +195,7 @@ export default function ProfileUser (props) {
                         />
           </div>
           <div className="form-group"> 
-              <label htmlFor="username">Last Name:</label>
+              <label htmlFor="username">LastName</label>
                     <input
                             type="text"
                             className="form-control"
@@ -201,7 +205,7 @@ export default function ProfileUser (props) {
                         />
           </div>
           <div className="form-group">
-          <label htmlFor="username">Phone:</label>
+          <label htmlFor="username">Phone</label>
           <input
             type="text"
             className="form-control"
@@ -211,7 +215,7 @@ export default function ProfileUser (props) {
           />
           </div> 
           <div className="form-group">
-          <label htmlFor="username">Email:</label>
+          <label htmlFor="username">Email</label>
           <input
             type="text"
             className="form-control"
@@ -219,6 +223,18 @@ export default function ProfileUser (props) {
             onChange={(event) => setInfoCustomer(prevState => ({...prevState, email: event.target.value}))}
             validations={[required]}
           />
+          
+          </div> 
+          <div className="form-group">
+          <label htmlFor="username">Password</label>
+          <input
+            type="password"
+            className="form-control"
+            value={InfoCustomer.password}
+            onChange={(event) => setInfoCustomer(prevState => ({...prevState, password: event.target.value}))}
+            validations={[required]}
+          />
+          
           </div> 
           {InfoCustomer.userType === 'DRIVER' && (
             <div>

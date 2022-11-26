@@ -43,18 +43,19 @@ class Customer {
     return axios.get(process.env.REACT_APP_API_URL + `/user/${id}`, 
     { headers: authHeader() });
   }
-  putUserCustomer(id, firstName, lastName, phone, email,  ) {
+  putUserCustomer(id, firstName, lastName, phone, email, username, password ) {
+    console.log(username +  "   " + password)
     return axios.put(process.env.REACT_APP_API_URL + `/user/${id}`,{
-      firstName, lastName, phone, email
+      firstName, lastName, phone, email, username, password
     }, {
       headers: authHeader()
     }
     )
   }  
-  putUserDriver(id, firstName, lastName, phone, email, personalId , vehicleInfo ) {
+  putUserDriver(id, firstName, lastName, phone, email, personalId , vehicleInfo,username, password ) {
     return axios.put(process.env.REACT_APP_API_URL + `/user/${id}`,
     {
-      firstName, lastName, phone, email, personalId, vehicleInfo
+      firstName, lastName, phone, email, personalId, vehicleInfo, username, password
     }, {
       headers: authHeader()
     }
