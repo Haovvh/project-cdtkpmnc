@@ -2,10 +2,8 @@ import React from "react";
 import "../../App.css"
 
 export default function UserInfo(props) {
-
-    if ((props.Fullname === "")) {
-        return null;
-    }
+    
+    
     return (
         <React.Fragment>
             {!props.show ? 
@@ -14,7 +12,7 @@ export default function UserInfo(props) {
                 <div className="container">
                 <div className="col-md-12">
                     <div className="form-group">
-                        <label htmlFor="name">FullName</label>   
+                        <label htmlFor="name">Fullname</label>   
                         <input
                             type="text"
                             value={props.Fullname}
@@ -25,23 +23,21 @@ export default function UserInfo(props) {
                 </div>
             </div>
             <div>
-                <h1>Call History</h1>
+                <h3>Call History</h3>
             </div>
             <div className="container totalTable">
                 <div className="col-md-12">
                     <table>
                         <tbody>
                             <tr>
-                                <th>Time</th>
-                                <th>Origin</th>
-                                <th>Destination</th>
+                                <th className="col">Origin</th>
+                                <th className="col">Destination</th>
                             </tr>
                             {props.places.length >0 && props.places.map((val, key) => {
                                 return (
                                     <tr key={key}>
-                                        <td className="col-3">{val.modified_date}</td>
-                                        <td className="col-3">{val.origin.fullAddressInString}</td>
-                                        <td className="col-3">{val.destination.fullAddressInString}</td>
+                                        <td data-label="Origin">{val.origin.fullAddressInString}</td>
+                                        <td data-label="Destination">{val.destination.fullAddressInString}</td>
                                     </tr>
                                 )
                             })}
@@ -50,21 +46,19 @@ export default function UserInfo(props) {
                 </div>
             </div>
             <div>
-                <h1>Place History</h1>
+                <h3>Place History</h3>
             </div>
             <div className="container totalTable">
                 <div className="col-md-12">
                     <table>
                         <tbody>
                             <tr>
-                                <th>Place</th>
-                                <th>Count</th>
+                                <th className="col">Place</th>
                             </tr>
                             {props.countPlace.length > 0 && props.countPlace.map((val, key) => {
                                 return (
                                     <tr key={key}>
-                                        <td className="col-3">{val.origin.fullAddressInString}</td>
-                                        <td className="col-3">{val.Count}</td>
+                                        <td data-label="Place">{val.fullAddressInString}</td>
                                     </tr>
                                 )
                             })}

@@ -110,7 +110,7 @@ class App extends Component {
             <Nav className="nav-item"> 
               <li className="nav-item">
                 <Link to={"/staff"} className="nav-link">
-                  Support Staff
+                  Staff
                 </Link>
               </li>
               </Nav>
@@ -130,7 +130,7 @@ class App extends Component {
             <Nav className="nav-item  ">
               <li className="nav-item">
                 <Link to={"/callmobile"} className="nav-link">
-                  Create User
+                  CreateUser
                 </Link>
               </li>
               </Nav>

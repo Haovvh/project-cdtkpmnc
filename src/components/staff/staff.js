@@ -21,7 +21,7 @@ export default function SupportStaff () {
   const id = userService.getCurrentUser().id;
   const [message, setMessage] = useState("");
   const [hidden, setHidden] = useState(false)
-  const [show, setShow] = useState(true)
+  const [show, setShow] = useState(false)
   const [Staff, setStaff] = useState({
     Fullname: "", 
     phone: "",
@@ -68,11 +68,30 @@ export default function SupportStaff () {
   },[])
 
   const handleClick = () => {
+
+    userService.getUserbyPhone(Info.phone).then(
+      response => {
+        console.log(response.data)
+        if(response.data) {
+          setHidden(true)
+          setShow(true)
+          setInfo(prevState => ({
+            ...prevState,
+            Fullname: response.data.firstName + " " + response.data.lastName
+          }))
+          
+        }
+      }, error => {
+        console.log(error)
+      }
+    )
     userService.getFiveMostPlaces(Info.phone).then(
       response => {
-          
           if(response.data.length > 0 ){
+            
+            setCountPlace(response.data)
               console.log(response.data)
+              
               setHidden(true)
           }
       }, error => {
@@ -82,8 +101,10 @@ export default function SupportStaff () {
   userService.getFiveRecentCall(Info.phone).then(
       
       response => {
-          console.log(response.data)
+          
           if(response.data.length > 0) {
+            setPlaces(response.data)
+            console.log(response.data)
             setHidden(true)
           }
           
@@ -91,6 +112,7 @@ export default function SupportStaff () {
           console.log(error)
       }
   )
+    
     /*
     userByPhoneService.getUserbyPhone(Info.Phone).then(
       response => {
@@ -167,7 +189,7 @@ export default function SupportStaff () {
                 <button className="btn btn-primary" onClick={() => {handleClick()}}>
                   Search</button>
               </div>
-              {(hidden) ? (<div className="col-5" >
+              {(show) ? (<div className="col-5" >
                 <button className="btn btn-primary" onClick={() => setShow(!show)}>
                   {!show ? "Show" :"Hidden"}
                 </button>
@@ -177,7 +199,7 @@ export default function SupportStaff () {
         <div className="card-container">          
           <UserInfo show = {show}  places = {places} countPlace = {countPlace} Fullname={Info.Fullname}/>          
         </div>
-        <StaffJourney place = {places} Info= {Info} show = {hidden}/> 
+        <StaffJourney place = {places} countPlace = {countPlace} Info= {Info} show = {hidden}/> 
       </React.Fragment>      
     );
 }

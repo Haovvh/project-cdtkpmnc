@@ -20,6 +20,7 @@ const required = value => {
 
 
 export default function StaffJourney (props) {
+    console.log(props.place)
     const id = customersService.getCurrentUser().id;
     const socket = io.connect(WEB_SOCKET);
     const [type, setType] = useState();
@@ -282,8 +283,8 @@ export default function StaffJourney (props) {
                                 disabled={disabled}
                             />
                             <datalist id="placeFrom">
-                                {props.place.map((item, key) => 
-                                <option key = {key} value={item.origin_Fulladdress}/>)} 
+                                {props.countPlace.length > 0 && props.countPlace.map((item, key) => 
+                                <option key = {key} value={item.fullAddressInString}/>)} 
                             </datalist>
                         </div>
                         <div className="form-group">
@@ -298,8 +299,8 @@ export default function StaffJourney (props) {
                                 disabled={disabled}
                             />
                             <datalist id="placeTo">
-                                {props.place.map((item, key) => 
-                                <option key = {key} value={item.origin_Fulladdress}/>)} 
+                                {props.countPlace.length>0 && props.countPlace.map((item, key) => 
+                                <option key = {key} value={item.fullAddressInString}/>)} 
                             </datalist>
                         </div>
                         <div className="row">
