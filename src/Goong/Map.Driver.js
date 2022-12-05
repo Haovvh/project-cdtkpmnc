@@ -60,8 +60,8 @@ export default function GoongMapDriver(props) {
 
     <ReactMapGL className='container'
       {...viewport}
-      width="60vw"
-      height="60vh"
+      width="80vw"
+      height="80vh"
       mapStyle='https://tiles.goong.io/assets/goong_map_web.json'
       goongApiAccessToken={KEY_MAP}
       onViewportChange={setViewport}

@@ -23,7 +23,7 @@ export default function UserInfo(props) {
                 </div>
             </div>
             <div>
-                <h3>Call History</h3>
+                <h3>History</h3>
             </div>
             <div className="container totalTable">
                 <div className="col-md-12">
@@ -46,7 +46,7 @@ export default function UserInfo(props) {
                 </div>
             </div>
             <div>
-                <h3>Place History</h3>
+                <h3>Place</h3>
             </div>
             <div className="container totalTable">
                 <div className="col-md-12">

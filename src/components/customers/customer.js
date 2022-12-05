@@ -48,10 +48,9 @@ export default function Customer () {
       <React.Fragment>
         <div className="container ">
         <div className="col">
-          <header className="jumbotron">
             <h3>Customer</h3>
-            <BookDriver InfoCustomer = {InfoCustomer}/>                 
-          </header>
+            </div>
+            <BookDriver InfoCustomer = {InfoCustomer}/>   
           {message && (
               <div className="form-group">
                 <div className="alert alert-danger" role="alert">
@@ -60,7 +59,7 @@ export default function Customer () {
               </div>
             )}    
         </div>    
-        </div>
+        
       </React.Fragment>
       
     );

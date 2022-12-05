@@ -96,7 +96,7 @@ export default function Driver (){
         setStatus("isBookDriver")
         setTimeout(() => {
           window.location.reload();
-        }, 300000)
+        }, 30000)
       }
     }
     // ...
@@ -281,16 +281,13 @@ export default function Driver (){
     return (
       <React.Fragment>
         <div className="card container">
-          <header className="jumbotron">
-            {driverInfo.id && (
+        {driverInfo.id && (
               <div>
-                <h3>FullName: {driverInfo.Fullname}</h3>
-                <h4>Phone: {driverInfo.Phone}</h4>
-                <h4>Car Info: {driverInfo.vehicleInfo.controlNumber}  </h4>
+                <h4>Driver {driverInfo.Fullname} </h4>
+                <h5> Car Info {driverInfo.vehicleInfo.controlNumber}</h5>
                 
               </div>
             )}
-          </header> 
           {message && (
               <div className="form-group">
                 <div className="alert alert-danger" role="alert">
@@ -298,6 +295,7 @@ export default function Driver (){
                 </div>
               </div>
             )}
+            </div>
           <div className="form-group ">
           <div className="row">
             <div className="col-5 container">
@@ -327,7 +325,7 @@ export default function Driver (){
             }
         </div>              
           
-        </div>
+        
       </React.Fragment>
       
     );

@@ -5,6 +5,7 @@
   "dependencies": {
     "@goongmaps/goong-geocoder-react": "^0.1.1",
     "@goongmaps/goong-map-react": "^1.1.0",
+    "@syncfusion/ej2-react-grids": "^20.3.58",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.0.1",
     "@testing-library/user-event": "^14.1.1",

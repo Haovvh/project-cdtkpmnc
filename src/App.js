@@ -75,7 +75,7 @@ class App extends Component {
         
         <Navbar bg="light" expand="lg" >
         <Container >
-          <Navbar.Brand to={"/"} className="navbar-brand">GoCarVietNam</Navbar.Brand>
+          <Navbar.Brand to={"/"} className="navbar-brand">Bee VietNam</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">       
           <div className="navbar-nav mr-auto col-lg-3">
@@ -125,16 +125,7 @@ class App extends Component {
               </Nav>
             )}
           
-          
-          { currentUser && isSupportStaff  && (
-            <Nav className="nav-item  ">
-              <li className="nav-item">
-                <Link to={"/callmobile"} className="nav-link">
-                  CreateUser
-                </Link>
-              </li>
-              </Nav>
-            )}
+                  
              
           
           {currentUser && isCustomer && (

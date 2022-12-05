@@ -128,6 +128,8 @@ export default function BookDriver (props) {
                 console.log(response.data)
             }
         )
+
+        
         
         //check xem có chuyến đi nào chưa hoàn thành không?
         
@@ -331,12 +333,19 @@ export default function BookDriver (props) {
         } 
         window.location.reload();      
       }
+      const handleOnClickOrigin = () =>{
+        
+      }
+      const handleOnClickDestination = () => {
+
+      }
 
     //
 //
     return (
         <React.Fragment>
             <div className="container">
+                
                 <div className="card">
                     <div>
                         {journey.price >0 && <h4>Price {journey.price} VND</h4>}                        

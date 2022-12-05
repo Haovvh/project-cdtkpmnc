@@ -23,27 +23,7 @@ export default function CallMobile () {
 
 
     const handleClickNewUSer = () => {
-      /*
-        userByPhoneService.postUser(NewInfo.Fullname, NewInfo.Phone, NewInfo.Date_of_birth).then(
-          response => {
-            console.log(response.data)
-            if (response.data.resp) {
-              console.log("True")
-              setMessage(response.data.message)
-              setNewInfo({
-                Fullname: "",
-                Phone: "",
-                Date_of_birth: ""
-              })
-            } else {
-              console.log("False")
-              setMessage(response.data.message)
-            }
-          }, error => {
-            console.log(error);
-          }
-        )
-        */
+     
       }
 
     return (

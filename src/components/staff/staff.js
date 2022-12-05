@@ -113,37 +113,7 @@ export default function SupportStaff () {
       }
   )
     
-    /*
-    userByPhoneService.getUserbyPhone(Info.Phone).then(
-      response => {
-        if(response.data.resp) {
-          console.log("Response True")
-          console.log(response.data.data)
-          setInfo(prevState => ({
-            ...prevState,
-            Fullname: response.data.data.Fullname,
-            User_ID: response.data.data.User_ID
-          }))
-          
-          setPlaces(response.data.address)
-          setCountPlace(response.data.count)
-        }
-        else {
-          console.log("Response False")
-          setMessage(response.data.message)          
-        }                 
-      },
-      error => {
-        
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();  
-          setMessage(resMessage)               
-        })
-        */
+   
   }  
 
   const handlePhone =  (event) => {
@@ -160,12 +130,8 @@ export default function SupportStaff () {
  
     return (
       <React.Fragment>
-        <div className="container">
-        <header className="jumbotron">
-          <h3>Staff: {Staff.Fullname} </h3>       
-          <h3>Phone: {Staff.phone} </h3>     
-          
-        </header>
+        <div className="card container">
+          <h3>Staff: {Staff.Fullname} </h3>            
         </div>
         {message && (
               <div className="form-group">

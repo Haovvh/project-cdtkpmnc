@@ -34,15 +34,7 @@ export default function DriverInfo(props) {
                             disabled
                         />
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="">Car Type</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={props.info.vehicleInfo.type}
-                            disabled
-                        />
-                    </div>         
+                            
                 </div>
             </div>
             )}
